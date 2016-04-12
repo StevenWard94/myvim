@@ -1,8 +1,8 @@
 # .gitignore file for StevenWard94/.myvim -- local: ~/.vim/
 # a description will precede each pattern listed here
 
-# ignore files in $GIT_DIR/colors directory - no need to have them in the repo
-colors/*
+# ignore all files & directories within the 'colors/' directory BUT NOT THE DIRECTORY ITSELF
+colors/**
 
-# ignore files/directories in $GIT_DIR/bundle - too much to include in repo and all available on github
-bundle/*
+# ignore all files & directories within the 'bundle/' directory BUT NOT THE DIRECTORY ITSELF
+bundle/**
