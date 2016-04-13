@@ -6,3 +6,7 @@ colors/**
 
 # ignore all files & directories within the 'bundle/' directory BUT NOT THE DIRECTORY ITSELF
 bundle/**
+
+# ignore the '.tmp_ignore/' directory and all of its contents - this directory is a temporary storage area to exclude
+#   extensively incomplete files that vim could potentially attempt to apply, which would cause some issues...
+.tmp_ignore/
