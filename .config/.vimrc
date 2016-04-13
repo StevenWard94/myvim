@@ -95,11 +95,12 @@
 
   " Setting up directories \begin
     set backup
-    if has('persistent_undo')
-      set undofile
-      set undolevels=1000
-      set undoreload=10000
-    endif
+    " config for persistent_undo and .un~ files removed until I can make it less annoying...
+    "if has('persistent_undo')
+      "set undofile
+      "set undolevels=1000
+      "set undoreload=10000
+    "endif
 
     if !exists('g:sw_override_views') || g:sw_override_views == 0
       let g:skipview_files = [
@@ -146,7 +147,7 @@
     endif
     set statusline+=\ [%{&ff}/%Y]           " show filetype
     set statusline+=\ [%{getcwd()}]         " show current working directory
-    set statusline+=%=%-14.(%l,%c%V)\ %p%%  " show (right-aligned) file-navigation info
+    set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " show (right-aligned) file-navigation info
   endif
 
   set backspace=indent,eol,start
@@ -160,7 +161,7 @@
   set ignorecase
   set smartcase
   set wildmenu
-  set wildmode=last:longest,full
+  set wildmode=list:longest,full                  " show a list of possible completions (longest matches then all) instead of auto-completing
   set whichwrap=b,s,h,l,<,>,[,]
   set scrolljump=-10                              " when cursor leaves screen (not <C-E>, etc.) auto-scroll 10% winheight
   set scrolloff=3
@@ -191,3 +192,13 @@
   "autocmd FileType go :autocmd BufWritePre <buffer> :Fmt
   autocmd BufNewFile,BufRead *.html.twig :set filetype=html.twig
   autocmd FileType haskell,puppet,ruby,vim,yml :setlocal expandtab shiftwidth=2 softtabstop=2
+
+  autocmd BufNewFile,BufRead *.coffee set filetype=coffee
+
+  " workarounds for vim-commentary and broken highlighting with Haskell
+  augroup haskell_fixes
+    autocmd!
+    autocmd FileType haskell :setlocal commentstring=--\ %s
+    autocmd FileType haskell,rust :if &spell | setlocal nospell | endif
+  augroup END
+" \end
