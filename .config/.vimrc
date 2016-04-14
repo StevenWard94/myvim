@@ -202,3 +202,41 @@
     autocmd FileType haskell,rust :if &spell | setlocal nospell | endif
   augroup END
 " \end
+
+" Key Mappings & Remappings \begin
+
+  " Setting up the <leader> key for custom mappings - default is '\' but this changes it to ',' b/c it's near home row
+  if !exists('g:sw_override_leader')
+    let mapleader = ','
+  else
+    let mapleader = g:sw_override_leader
+  endif
+  if !exists('g:sw_override_locleader')
+    let maplocalleader = '_'
+  else
+    let maplocalleader = g:sw_override_locleader
+  endif
+
+  " Mappings to quickly open config (.vimrc), edit it and then apply it
+  if !exists('g:sw_override_econfigmap')
+    let s:sw_econfigmap = '<leader>ec'
+  else
+    let s:sw_econfigmap = g:sw_override_econfigmap
+  endif
+  if !exists('g:sw_override_aconfigmap')
+    let s:sw_aconfigmap = '<leader>ac'
+  else
+    let s:sw_aconfigmap = g:sw_override_aconfigmap
+  endif
+
+  " Mappings for easier movement between tabs & windows while in Normal mode
+  if !exists('g:sw_override_easywindows') || g:sw_override_easywindows == 0
+    nmap! <C-J> <C-W>j<C-W>_
+    nmap! <C-K> <C-W>k<C-W>_
+    nmap! <C-L> <C-W>l<C-W>\<Bar>
+    nmap! <C-H> <C-W>h<C-W>\<Bar>
+  endif
+
+  " Use 'virtual' line navigation for 'j' and 'k'
+  noremap j gj
+  noremap k gk
