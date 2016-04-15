@@ -231,12 +231,139 @@
 
   " Mappings for easier movement between tabs & windows while in Normal mode
   if !exists('g:sw_override_easywindows') || g:sw_override_easywindows == 0
-    nmap! <C-J> <C-W>j<C-W>_
-    nmap! <C-K> <C-W>k<C-W>_
-    nmap! <C-L> <C-W>l<C-W>\<Bar>
-    nmap! <C-H> <C-W>h<C-W>\<Bar>
+    nmap <C-J> <C-W>j<C-W>_
+    nmap <C-K> <C-W>k<C-W>_
+    nmap <C-L> <C-W>l<C-W>\<Bar>
+    nmap <C-H> <C-W>h<C-W>\<Bar>
   endif
 
   " Use 'virtual' line navigation for 'j' and 'k'
   noremap j gj
   noremap k gk
+
+  " Mappings for use with 'RelativeWrap(key,...)' in "Helper Functions"
+  "   these map start/end of line motion commands to behave relative to the current row instead of moving to the
+  "   start/end of a 'text line' when the 'wrap' option is set - e.g a sentence is wrapped at column 50 into two rows,
+  "   commands like '$', '0', '^', etc. will only jump to column 1 of column 50 of the current row instead of wrapping
+  "   with the sentence --- these seem more "intuitive" to me when I'm trying to work/remember mappings quickly
+  if !exists('g:sw_override_relativewrap') || g:sw_override_relativewrap == 0
+    " [essentially] Map a prefixed 'g' to each linewise motion key in Normal, Operator-Pending, and Visual+Select modes
+    noremap $ :call RelativeWrap("$")<CR>
+    noremap <End> :call RelativeWrap("$")<CR>
+    noremap 0 :call RelativeWrap("0")<CR>
+    noremap <Home> :call RelativeWrap("0")<CR>
+    noremap ^ :call RelativeWrap("^")<CR>
+    " the following 2 override the above mappings for $ and <End> in Operator-Pending mode to
+    "   force inclusive motion when used with ':execute normal!'
+    onoremap $ v:call RelativeWrap("$")<CR>
+    onoremap <End> v:call RelativeWrap("$")<CR>
+    " now override Visual+Select mode mappings for all keys to ensure RelativeWrap() executes with a correct 'vsel' value
+    vnoremap $ :<C-U>call RelativeWrap("$", 1)<CR>
+    vnoremap <End> :<C-U>call RelativeWrap("$", 1)<CR>
+    vnoremap 0 :<C-U>call RelativeWrap("0", 1)<CR>
+    vnoremap <Home> :<C-U>call RelativeWrap("0", 1)<CR>
+    vnoremap ^ :<C-U>call RelativeWrap("^", 1)<CR>
+  endif
+
+  " Some helpful "autocorrects" for capitalization mistaked in commands
+  if !exists('g:sw_override_shiftslips') || g:sw_override_shiftslips == 0
+    if has('user_commands')
+      command! -bang -nargs=* -complete=file E e<bang> <args>
+      command! -bang -nargs=* -complete=file W w<bang> <args>
+      command! -bang -nargs=* -complete=file Wq wq<bang> <args>
+      command! -bang -nargs=* -complete=file WQ wq<bang> <args>
+      command! -bang Wa wa<bang>
+      command! -bang WA wa<bang>
+      command! -bang Q q<bang>
+      command! -bang QA qa<bang>
+      command! -bang Qa qa<bang>
+    endif
+    cmap Tabe tabe
+  endif
+
+  " Map 'Y' to behave like 'C' or 'D' in Normal mode (i.e. 'yank' from cursor to end of line)
+  nnoremap Y y$
+
+  " Mappings for <leader>fn where 'n' is foldlevel for ':set foldlevel=n' -- makes pagewise folding/unfolding easier \begin
+    nmap <leader>f0 :set foldlevel=0<CR>
+    nmap <leader>f1 :set foldlevel=1<CR>
+    nmap <leader>f2 :set foldlevel=2<CR>
+    nmap <leader>f3 :set foldlevel=3<CR>
+    nmap <leader>f4 :set foldlevel=4<CR>
+    nmap <leader>f5 :set foldlevel=5<CR>
+    nmap <leader>f6 :set foldlevel=6<CR>
+    nmap <leader>f7 :set foldlevel=7<CR>
+    nmap <leader>f8 :set foldlevel=8<CR>
+    nmap <leader>f9 :set foldlevel=9<CR>
+  " \end
+
+  " Enable toggling of search-result highlighting (instead of clearing of results) with <leader>/
+  if exists('g:sw_override_hlsearch') && g:sw_override_hlsearch != 0
+    nmap <silent> <leader>/ :nohlsearch<CR>
+  else
+    nmap <silent> <leader>/ :set invhlsearch<CR>
+  endif
+
+  " Mapping to quickly find markers for git-merge conflicts
+  map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
+
+  " Shortcuts!!!  \begin
+
+    " change 'working directory' to that of currently active buffer
+    cmap cwd lcd %:p:h
+    cmap cd. lcd %:p:h
+
+    " indent shifting while in Visual mode will no longer exit Visual mode
+    vnoremap < <gv
+    vnoremap > >gv
+
+    " enable use of the repeat operator for selections in Visual mode (!)
+    "   http://stackoverflow.com/a/8064607/127816
+    vnoremap . :normal .<CR>
+
+    " actually writes files when they should have been opened with 'sudo' but weren't
+    cmap w!! w !sudo tee % >/dev/null
+
+    " some ':edit' mode helpers [http://vimcasts.org/e/14]
+    cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
+    map <leader>ew :e %%
+    map <leader>es :sp %%
+    map <leader>ev :vsp %%
+    map <leader>et :tabe %%
+
+    " make viewport sizes equal
+    map <leader>= <C-w>=
+
+    " map <leader>ff to display all lines with match to the keyword under cursor and ask which line to jump to
+    nmap <leader>ff [I:let nr = input("Which one: ")<Bar>execute "normal " . nr . "[\t"<CR>
+
+    " easier horizontal scrolling
+    map zl zL
+    map zh zH
+
+    " easier auto-formatting
+    nnoremap <silent> <leader>q gwip
+
+    " FIXME: revert this - see f70be548
+    " quickly toggle fullscreen mode for GVim and TermVim - requires that 'wmctrl' be in PATH
+    map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+  " \end
+
+" \end
+
+" Helper Functions \begin
+  if !exists('g:sw_override_relativewrap') || g:sw_override_relativewrap == 0
+    function! RelativeWrap(key,...)
+      let vsel = ""
+      if a:0
+        let vsel="gv"
+      endif
+      if &wrap
+        execute "normal!" vsel . "g" . a:key
+      else
+        execute "normal!" vsel . a:key
+      endif
+      unlet vsel
+    endfunction
+  endif
+" \end
