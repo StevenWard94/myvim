@@ -7,6 +7,16 @@ colors/**
 # ignore all files & directories within the 'bundle/' directory BUT NOT THE DIRECTORY ITSELF
 bundle/**
 
-# ignore the '.tmp_ignore/' directory and all of its contents - this directory is a temporary storage area to exclude
+# ignore the '.tmp/' directory and all of its contents - this directory is a temporary storage area to exclude
 #   extensively incomplete files that vim could potentially attempt to apply, which would cause some issues...
-.tmp_ignore/
+.tmp/
+
+# ignore the '.local.nvimlog' file since it's just a log for ouput of commands affecting the local repo
+.local.nvimlog
+
+# ignore all files in the 'spell/' directory EXCEPT those for general 'en' and 'en_US' locales
+spell/*
+!spell/README_en.txt
+!spell/en*.sug
+!spell/en*.spl
+!spell/en_US.diff

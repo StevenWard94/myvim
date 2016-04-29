@@ -18,8 +18,12 @@
   endif
 
   " fix arrow-key issues flagged at: " https://github.com/spf13/spf13-vim/issues/780
-  if &term[:4] ==? 'xterm' || &term[:5] ==? 'screen' || &term[:3] ==? 'rxvt'
-    inoremap <silent> <C-[>OC <RIGHT>
+  " NOTE: since this file is my '.vimrc' AND 'nvim/init.vim', I use !has('nvim') to hide options and
+  " commands that cause errors in neovim (usually b/c nvim removed an option that still exists in vim)
+  if !has('nvim')
+    if &term[:4] ==? 'xterm' || &term[:5] ==? 'screen' || &term[:3] ==? 'rxvt'
+      inoremap <silent> <C-[>OC <RIGHT>
+    endif
   endif
 
   " use 'helper configs' if they exist \begin
@@ -44,7 +48,13 @@
     noremap <leader>bg :call ToggleBackground()<CR>
   " \end
 
-  if !has('gui') | set term=$TERM | endif       " make sure non-ASCII keys behave correctly
+  " make sure non-ASCII keys behave correctly ('term' option is 'vim only' - removed in neovim)
+  if !has('nvim')
+    if !has('gui')
+      set term=$TERM
+    endif
+  endif
+
   filetype plugin indent on
   syntax on
   set mouse=a                                   " enable mouse usage automatically for all modes
@@ -95,6 +105,32 @@
 
   " Setting up directories \begin
     set backup
+
+    " a function to generate the string for 'backupdir' option based on the cwd
+    function ConfigureBackups()
+      let l:backuploc = ""
+      if getcwd() == $HOME
+        let l:backuploc = "~/.archived/backups.d/homedir.d,~/.archived/backups.d/lost+found"
+      else
+        let l:backuploc = (expand("%:p:h:t")[0] == '.') ? expand("%:p:h:t")[1:] : expand("%:p:h:t")
+        let l:backuploc = '~/.archived/backups.d/' . l:backuploc . ',./.bak.d,~/.archived/backups.d/lost+found'
+      endif
+      return l:backuploc
+    endfunction
+
+    " autocmd group to set 'backupdir' to the return value of ConfigureBackup() and to set the
+    "   'backupext' option (vim default is just a tilde, '~') to '__@{timestamp}.bak~', obviously
+    "   with '{timestamp}' being replaced by a timestamp
+    " for example, if a file, ~/dir/.alsodir/filename , was saved at 12:30 on November 23, 2016, then the
+    " backup's path would be:   ~/.archived/backups.d/alsodir/filename__@2016Nov231230.bak~
+    "   NOTE: the missing '.' in '.alsodir' is deliberate, if the containing directory name begins with a '.'
+    "   it is removed and the rest of the name is used for the directory name in ~/.archived/backups.d/
+    augroup configure_backups
+      autocmd!
+      autocmd BufWritePre * :let &backupdir = ConfigureBackups()
+      autocmd BufWritePre * :let &backupext = '__@' . strftime("%Y%b%d%X") . '.bak~'
+    augroup END
+
     " config for persistent_undo and .un~ files removed until I can make it less annoying...
     "if has('persistent_undo')
       "set undofile
@@ -218,12 +254,12 @@
   endif
 
   " Mappings to quickly open config (.vimrc), edit it and then apply it
-  if !exists('g:sw_override_econfigmap')
+  if !exists('g:sw_override_econfigmap') || g:sw_override_econfigmap == 0
     let s:sw_econfigmap = '<leader>ec'
   else
     let s:sw_econfigmap = g:sw_override_econfigmap
   endif
-  if !exists('g:sw_override_aconfigmap')
+  if !exists('g:sw_override_aconfigmap') || g:sw_override_aconfigmap == 0
     let s:sw_aconfigmap = '<leader>ac'
   else
     let s:sw_aconfigmap = g:sw_override_aconfigmap
@@ -325,11 +361,12 @@
     cmap w!! w !sudo tee % >/dev/null
 
     " some ':edit' mode helpers [http://vimcasts.org/e/14]
-    cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
-    map <leader>ew :e %%
-    map <leader>es :sp %%
-    map <leader>ev :vsp %%
-    map <leader>et :tabe %%
+    " conflicted with previously mapped keys for editing/applying my .vimrc
+    "cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
+    "map <leader>ew :e %%
+    "map <leader>es :sp %%
+    "map <leader>ev :vsp %%
+    "map <leader>et :tabe %%
 
     " make viewport sizes equal
     map <leader>= <C-w>=
@@ -344,9 +381,10 @@
     " easier auto-formatting
     nnoremap <silent> <leader>q gwip
 
+    " not sure what this does and it had a 'FIXME' w/ pull request so it's out for now, source: http://github.com/spf13/spf13-vim.git
     " FIXME: revert this - see f70be548
     " quickly toggle fullscreen mode for GVim and TermVim - requires that 'wmctrl' be in PATH
-    map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+    " map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
   " \end
 
 " \end
