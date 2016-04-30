@@ -704,3 +704,130 @@ function! s:DefRuby()
             receiver = $1
             message = Regexp.quote($3)
             load_buffer_class( receiver )
+
+            cv = eval( "self.class.constants" )
+            vartype = get_var_type( receiver )
+            dprint "vartype: %s" % vartype
+
+            invalid_vartype = ['', "gets"]
+            if !invalid_vartype.include?( vartype )
+              load_buffer_class( vartype )
+
+              begin
+                methods = eval( "#{vartype}.instance_methods" )
+                variables = eval( "#{vartype}.instance_variables" )
+              rescue Exception
+                dprint "load_buffer_class err: %s" % $!
+              end
+            elsif (cv).include?( receiver )
+              # foo.func, where foo is local var
+              methods = eval( "#{receiver}.methods" )
+              vartype = receiver
+            elsif /^[A-Z]/ =~ receiver and /\./ !~ receiver
+              vartype = receiver
+              # Foo::Bar.func
+              begin
+                methods = eval( "#{receiver}.methods" )
+              rescue Exception
+              end
+            else
+              # func1.func2
+              ObjectSpace.each_object( Module ){|m|
+                next if m.name != "IRB::Context" and
+                  /^(IRB|SLex|RubyLex|RubyToken)/ =~ m.name
+                methods.concat m.instance_methods( false )
+              }
+            end
+            variables += add_rails_columns( "#{vartype}" ) if vartype && !invalid_vartype.include?( vartype )
+
+          when /^\(?\s*[A-Za-z0-9:^@.%\/+*\(\)]+\.\.\.?[A-Za-z0-9:^@.%\/+*\(\)]+\s*\)?\.([^.]*)/
+            message = $1
+            methods = Range.instance_methods( true )
+
+          when /^\.([^.]*)$/ # unknown (maybe string?)
+            message = Regexp.quote($1)
+            methods = String.instance_methods( true )
+
+        else
+          dprint "default/other"
+          inclass = eval( VIM::evaluate( "s:IsInClassDef()" ) )
+
+          if inclass != nil
+            dprint "inclass"
+            classdef = "%s\n" % VIM::Buffer.current[ inclass.min ]
+            found = /^\s*class\s*([A-Za-z0-9_-]*)(\s*<\s*([A-Za-z0-9_:-]*))?\s*\n$/.match( classdef )
+
+            if found != nil
+              receiver = $1
+              message = input
+              load_buffer_class( receiver )
+              begin
+                methods = eval( "#{receiver}.instance_methods" )
+                variables += add_rails_columns( "#{receiver}" )
+              rescue Exception
+                found = nil
+              end
+            end
+          end
+
+          if inclass == nil || found == nil
+            dprint "inclass == nil"
+            methods = get_buffer_methods
+            methods += get_rails_view_methods
+
+            cls_const = Class.constants
+            constants = cls_const.select { |c| /^[A-Z_-]+$/.match( c ) }
+            classes = eval( "self.class.constants" ) - constants
+            classes += get_buffer_classes
+            classes += get_buffer_modules
+
+            include_objectspace = VIM::evaluate( "exists( 'g:rubycomplete_include_objectspace' ) && g:rubycomplete_include_objectspace" )
+            ObjectSpace.each_object( Class ) { |cls| classes << cls.to_s } if include_objectspace == "1"
+            message = receiver = input
+          end
+
+          methods += get_rails_helpers
+          methods += Kernel.public_methods
+        end
+
+        include_object = VIM::evaluate( "exists( 'g:rubycomplete_include_object' ) && g:rubycomplete_include_object" )
+        methods = clean_sel( methods, message )
+        methods = ( methods - Object.instance_methods ) if include_object == 0
+        rbcmeth = ( VimRubyCompletion.instance_methods - Object.instance_methods ) # remove RubyComplete methods
+        methods = ( methods - rbcmeth )
+
+        variables = clean_sel( variables, message )
+        classes = clean_sel( classes, message ) - ["VimRubyCompletion"]
+        constants = clean_sel( constants, message )
+
+        valid = []
+        valid += methods.collect { |m| { :name => m.to_s, :type => 'm' } }
+        valid += variables.collect { |v| { :name => v.to_s, :type => 'v' } }
+        valid += classes.collect { |c| { :name => c.to_s, :type =>'t' } }
+        valid += constants.collect { |d| { :name => d.to_s, :type => 'd' } }
+        valid.sort! { |x,y| x[:name] <=> y[:name] }
+
+        outp = ""
+
+        rg = 0..valid.length
+        rg.step(150) do |x|
+          stpos = 0+x
+          enpos = 150+x
+          valid[stpos..enpos].each { |c| outp += "{'word': '%s', 'item': '%s', 'kind': '%s'}," % [ c[:name], c[:name], c[:type] ].map{|x|escape_vim_singlequote_string(x)} }
+          outp.sub!( /,$/, '' )
+
+          VIM::command( "call extend( g:rubycomplete_completions, [%s] )" % outp )
+          outp = ""
+        end
+      end
+    # \end main completion code
+
+    end # VimRubyCompletion
+    # \end ruby completion
+    RUBYEOF
+endfunction
+
+let s:rubycomplete_rails_loaded = 0
+
+call s:DefRuby()
+" \end ruby-side code
