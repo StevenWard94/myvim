@@ -1,38 +1,32 @@
-" vim: tw=120:fo=cr1jb:wm=0:et:sw=2:sts=2:ts=8:foldmarker=\\begin,\\end:foldmethod=marker:foldlevel=0:
+" vim: tw=120:fo=cr1jb:wm=0:sw=2:sts=2:ts=8:
 " ----------------------------------------------------------------------------------------------------------------------
-"
 " Vim compiler file
-" Language:             Ruby
-" Function:             Syntax checking and/or error reporting
-" Maintainer:           Tim Pope <vimNOSPAM@tpope.org>
+" Language:             eRuby
+" Maintainer:           Doug Kearns <dougkearns@gmail.com>
 " URL:                  https://github.com/vim-ruby/vim-ruby
-" Release Coordinator:  [upstream] Doug Kearns <dougkearns@gmail.com>
+" Release Coordinator:  Doug Kearns <dougkearns@gmail.com>
 " ----------------------------------------------------------------------------------------------------------------------
 
 if exists( 'current_compiler' )
   finish
 endif
-let current_compiler = "ruby"
+let current_compiler = "eruby"
 
-if exists( ':CompilerSet' ) != 2          " old versions of Vim always used :setlocal
+if exists( ':CompilerSet' ) != 2
   command -nargs=* CompilerSet setlocal <args>
 endif
 
 let s:cpo_save = &cpo
 set cpo-=C
 
-" default settings runs script normally
-" add '-c' switch to only run syntax checking:
-"
-"   CompilerSet makeprg=ruby\ -wc\ $*
-"
-" or add '-c' at :make command line:
-"
-"   :make -c %<CR>
-"
-CompilerSet makeprg=ruby\ -w\ $*
+if exists( 'eruby_compiler' ) && eruby_compiler ==# 'eruby'
+  CompilerSet makeprg=eruby
+else
+  CompilerSet makeprg=erb
+endif
 
 CompilerSet errorformat=
+      \eruby:\ %f:%l:%m,
       \%+E%f:%l:\ parse\ error,
       \%W%f:%l:\ warning:\ %m,
       \%E%f:%l:in\ %*[^:]:\ %m,
