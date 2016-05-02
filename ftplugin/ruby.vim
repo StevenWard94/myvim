@@ -195,4 +195,79 @@ if !exists('g:no_plugin_maps') && !exists('g:no_ruby_maps')
         \."| silent! execute 'unmap <buffer> [m' | silent! execute 'unmap <buffer> ]m' | silent! execute 'unmap <buffer> [M' | silent! execute 'unmap <buffer> ]M'"
 
   if maparg('im', 'n') == ''
-    onoremap <silent> <buffer>
+    onoremap <silent> <buffer> im :<C-U>call <SID>wrap_i('[m',']M')<CR>
+    onoremap <silent> <buffer> am :<C-U>call <SID>wrap_a('[m',']M')<CR>
+    xnoremap <silent> <buffer> im :<C-U>call <SID>wrap_i('[m',']M')<CR>
+    xnoremap <silent> <buffer> am :<C-U>call <SID>wrap_a('[m',']M')<CR>
+    let b:undo_ftplugin = b:undo_ftplugin . "| silent! execute 'ounmap <buffer> im' | silent! execute 'ounmap <buffer> am'"
+          \."| silent! execute 'xunmap <buffer> im' | silent! execute 'xunmap <buffer> am'"
+  endif
+
+  if maparg('iM','n') == ''
+    onoremap <silent> <buffer> iM :<C-U>call <SID>wrap_i('[[','][')<CR>
+    onoremap <silent> <buffer> aM :<C-U>call <SID>wrap_a('[[','][')<CR>
+    xnoremap <silent> <buffer> iM :<C-U>call <SID>wrap_i('[[','][')<CR>
+    xnoremap <silent> <buffer> aM :<C-U>call <SID>wrap_a('[[','][')<CR>
+    let b:undo_ftplugin = b:undo_ftplugin . "| sil! exe 'ounmap <buffer> iM' | sil! exe 'ounmap <buffer> aM'"
+          \."| sil! exe 'xunmap <buffer> iM' | sil! exe 'xunmap <buffer> aM'"
+  endif
+
+  call s:map( 'c', '', '<C-R><C-W> <Plug><cword>' )
+  call s:map( 'c', '', '<C-R><C-F> <Plug><cfile>' )
+
+  cmap <buffer><script><expr> <SID>tagzv &foldopen =~# 'tag' ? '<Bar>normal! zv' : ''
+  call s:map( 'n', '<silent>', '<C-]>       <SID>:exe  v:count1."tag <Plug><cword>"<SID>tagzv<CR>' ) "
+  call s:map( 'n', '<silent>', 'g<C-]>      <SID>:exe         "tjump <Plug><cword>"<SID>tagzv<CR>' ) "
+  call s:map( 'n', '<silent>', 'g]          <SID>:exe       "tselect <Plug><cword>"<SID>tagzv<CR>' ) "
+  call s:map( 'n', '<silent>', '<C-W>]      <SID>:exe v:count1."stag <Plug><cword>"<SID>tagzv<CR>' ) "
+  call s:map( 'n', '<silent>', '<C-W><C-]>  <SID>:exe v:count1."stag <Plug><cword>"<SID>tagzv<CR>' ) "
+  call s:map( 'n', '<silent>', '<C-W>g<C-]> <SID>:exe        "stjump <Plug><cword>"<SID>tagzv<CR>' ) "
+  call s:map( 'n', '<silent>', '<C-W>g]     <SID>:exe      "stselect <Plug><cword>"<SID>tagzv<CR>' )
+  call s:map( 'n', '<silent>', '<C-W>}      <SID>:exe v:count1."ptag <Plug><cword>"<CR>' ) "
+  call s:map( 'n', '<silent>', '<C-W>g}     <SID>:exe        "ptjump <Plug><cword>"<CR>' ) "
+
+  call s:map( 'n', '<silent>', 'gf           <SID>c:find <Plug><cfile><CR>' )
+  call s:map( 'n', '<silent>', '<C-W>f      <SID>c:sfind <Plug><cfile><CR>' )
+  call s:map( 'n', '<silent>', '<C-W><C-F>  <SID>c:sfind <Plug><cfile><CR>' )
+  call s:map( 'n', '<silent>', '<C-W>gf   <SID>c:tabfind <Plug><cfile><CR>' )
+endif
+
+let &cpo = s:cpo_save
+unlet s:cpo_save
+
+if exists('g:did_ruby_ftplugin_functions')
+  finish
+endif
+let g:did_ruby_ftplugin_functions = 1
+
+function! RubyBalloonexpr() abort
+  if !exists('s:ri_found')
+    let s:ri_found = executable('ri')
+  endif
+  if s:ri_found
+    let line = getline(v:beval_lnum)
+    let b = matchstr( strpart( line, 0, v:beval_col ), '\%(\w\|[:.]\)*$' )
+    let a = substitute( matchstr( strpart( line, v:beval_col ), '^\w*\%([?!]\|\s*=\)\?' ), '\s\+', '', 'g' )
+    let str = b . a
+    let before = strpart( line, 0, v:beval_col - strlen(b) )
+    let after = strpart( line, v:beval_col + strlen(a) )
+
+    if str =~ '^\.'
+      let str = substitute( str, '^\.', '#', 'g' )
+      if before =~ '\]\s*$'
+        let str = 'Array' . str
+      elseif before =~ '}\s*$'
+        " false positives from blocks here...
+        let str = 'Hash' . str
+      elseif before =~ "[\"'`]\\s*$" || before =~ '\$\d\+\s*$'
+        let str = 'String' . str
+      elseif before =~ '\$\d\+\.\d\+\s*$'
+        let str = 'Float' . str
+      elseif before =~ '\$\d\+\s*$'
+        let str = 'Integer' . str
+      elseif before =~ '/\s*$'
+        let str = 'Regexp' . str
+      else
+        let str = substitute( str, '^#', '.', '' )
+      endif
+    endif
