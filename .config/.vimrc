@@ -110,10 +110,10 @@
     function ConfigureBackups()
       let l:backuploc = ""
       if getcwd() == $HOME
-        let l:backuploc = "~/.archived/backups.d/homedir.d,~/.archived/backups.d/lost+found"
+        let l:backuploc = "~/.archived/bak.d/homedir.d,~/.archived/bak.d/lost+found"
       else
         let l:backuploc = (expand("%:p:h:t")[0] == '.') ? expand("%:p:h:t")[1:] : expand("%:p:h:t")
-        let l:backuploc = '~/.archived/backups.d/' . l:backuploc . ',./.bak.d,~/.archived/backups.d/lost+found'
+        let l:backuploc = '~/.archived/bak.d/' . l:backuploc . ',./.bak.d,~/.archived/bak.d/lost+found'
       endif
       return l:backuploc
     endfunction
@@ -122,14 +122,14 @@
     "   'backupext' option (vim default is just a tilde, '~') to '__@{timestamp}.bak~', obviously
     "   with '{timestamp}' being replaced by a timestamp
     " for example, if a file, ~/dir/.alsodir/filename , was saved at 12:30 on November 23, 2016, then the
-    " backup's path would be:   ~/.archived/backups.d/alsodir/filename__@2016Nov231230.bak~
+    " backup's path would be:   ~/.archived/bak.d/alsodir/filename__@2016Nov231230.bak~
     "   NOTE: the missing '.' in '.alsodir' is deliberate, if the containing directory name begins with a '.'
-    "   it is removed and the rest of the name is used for the directory name in ~/.archived/backups.d/
-    augroup configure_backups
-      autocmd!
-      autocmd BufWritePre * :let &backupdir = ConfigureBackups()
-      autocmd BufWritePre * :let &backupext = '__@' . strftime("%Y%b%d%X") . '.bak~'
-    augroup END
+    "   it is removed and the rest of the name is used for the directory name in ~/.archived/bak.d/
+    "augroup configure_backups
+     " autocmd!
+      "autocmd BufWritePre * :let &backupdir = ConfigureBackups()
+      "autocmd BufWritePre * :let &backupext = '__@' . strftime("%Y%b%d%X") . '.bak~'
+    "augroup END
 
     " config for persistent_undo and .un~ files removed until I can make it less annoying...
     "if has('persistent_undo')
@@ -158,6 +158,10 @@
     if exists('g:molokai_original') | unlet g:molokai_original | endif
     let g:rehash256 = 1
     colorscheme molokai
+  endif
+
+  if filereadable(expand("~/.nvim/colors/jellybeans.vim"))
+    let g:jellybeans_use_term_italics = !exists('g:jellybeans_use_term_italics') ? 1 : g:jellybeans_use_term_italics
   endif
 
   set tabpagemax=15
