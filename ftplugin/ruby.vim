@@ -271,3 +271,165 @@ function! RubyBalloonexpr() abort
         let str = substitute( str, '^#', '.', '' )
       endif
     endif
+    let str = substitute(str, '.*\.\s*to_f\s*\.\s*','Float#','')
+    let str = substitute(str,'.*\.\s*to_i\%(nt\)\=\s*\.\s*','Integer#','')
+    let str = substitute(str,'.*\.\s*to_s\%(tr\)\=\s*\.\s*','String#','')
+    let str = substitute(str,'.*\.\s*to_sym\s*\.\s*','Symbol#','')
+    let str = substitute(str,'.*\.\s*to_a\%(ry\)\=\s*\.\s*','Array#','')
+    let str = substitute(str,'.*\.\s*to_proc\s*\.\s*','Proc#','')
+
+    if str !~ '^\w'
+      return ''
+    endif
+    silent! let res = substitute(system("ri -f rdoc -T \"".str.'"'),'\n$','','')
+    if res =~ '^Nothing known about' || res =~ '^Bad argument:' || res=~ '^More than one method'
+      return ''
+    endif
+    return res
+  else
+    return ""
+  endif
+endfunction
+
+
+function! s:searchsyn(pattern, syn, flags, mode) abort
+  let cnt = v:count1
+  normal! m'
+  if a:mode ==# 'v'
+    normal! gv
+  endif
+  let i = 0
+  while i < cnt
+    let i = i + 1
+    let line = line( '.' )
+    let col = col( '.' )
+    let pos = search( a:pattern, 'W' . a:flags )
+    while pos != 0 && s:synname() !~# a:syn
+      let pos = search( a:pattern, 'W' . a:flags )
+    endwhile
+    if pos == 0
+      call cursor( line, col )
+      return
+    endif
+  endwhile
+endfunction
+
+
+function! s:synname() abort
+  return synIDattr( synID( line('.'), col('.'), 0 ), 'name' )
+endfunction
+
+function! s:wrap_i(back, forward) abort
+  execute 'normal k' . a:forward
+  let line = line('.')
+  execute 'normal ' . a:back
+  if line('.') == line - 1
+    return s:wrap_a( a:back, a:forward )
+  endif
+  execute 'normal jV' . a:forward . 'k'
+endfunction
+
+
+function! s:wrap_a(back, forward) abort
+  execute 'normal ' . a:forward
+  if line('.') < line('$') && getline( line('.') + 1 ) ==# ''
+    let after = 1
+  endif
+  execute 'normal ' . a:back
+  while getline( line('.') - 1 ) =~# '^\s*#' && line('.')
+    -
+  endwhile
+  if exists('after')
+    execute 'normal V' . a:forward . 'j'
+  elseif line('.') > 1 && getline( line('.') - 1 ) =~# '^\s*$'
+    execute 'normal kV' . a:forward
+  else
+    execute 'normal V' . a:forward
+  endif
+endfunction
+
+
+function! RubyCursorIdentifier() abort
+  let asciicode    = '\%(\w\|[]})\"'."'".']\)\@<!\%(?\%(\\M-\\C-\|\\C-\\M-\|\\M-\\c\|\\c\\M-\|\\c\|\\C-\|\\M-\)\=\%(\\\o\{1,3}\|\\x\x\{1,2}\|\\\=\S\)\)'
+  let number       = '\%(\%(\w\|[]})\"'."'".']\s*\)\@<!-\)\=\%(\<[[:digit:]_]\+\%(\.[[:digit:]_]\+\>\)\=\%([Ee][[:digit:]_]\+\)\=\>\|\<0[xXbBoOdD][[:xdigit:]_]\+\>\)\|'.asciicode
+  let operator     = '\%(\[\]\|<<\|<=>\|[!<>]=\=\|===\=\|[!=]\~\|>>\|\*\*\|\.\.\.\=\|=>\|[~^&|*/%+-]\)'
+  let method       = '\%(\.[_a-zA-Z]\w*\s*=>\@!\|\<[_a-zA-z]\w*\>[?!]\=\)'
+  let global       = '$\%([!$&"'."'".'*+,./:;<=>?@\`~]\|-\=\w\+\>\)'
+  let symbolizable = '\%(\%(@@\=\)\w\+\>\|'.global.'\|'.method.'\|'.operator.'\)'
+  let pattern      = '\C\s*\%('.number.'\|\%(:\@<!:\)\='.symbolizable.'\)'
+  let [lnum, col]  = searchpos( pattern, 'bcn', line('.') )
+  let raw          = matchstr( getline('.')[col - 1 : ], pattern )
+  let stripped     = substitute( substitute( raw, '\s\+=$', '=', '' ), '^\s*[:.]\=', '', '' )
+  return stripped == '' ? expand( "<cword>" ) : stripped
+endfunction
+
+
+function! RubyCursorFile() abort
+  let isfname = &isfname
+  try
+    set isfname+=:
+    let cfile = expand( "<cfile>" )
+  finally
+    let isfname = &isfname
+  endtry
+  let pre = matchstr( strpart( getline('.'), 0, col('.') - 1 ), '.*\f\@<!' )
+  let post = matchstr( strpart( getline('.'), col('.') ), '\f\@!.*' )
+  let ext = getline('.') =~# '^\s*\%(require\%(_relative\)\=\|autoload\)\>' && cfile !~# '\.rb$' ? '.rb' : ''
+  if s:synname() ==# 'rubyConstant'
+    let cfile = substitute( cfile, '\.\w\+[?!=]\=$', '', '' )
+    let cfile = substitute( cfile, '::', '/', 'g' )
+    let cfile = substitute( cfile, '\(\u\+\)\(\u\l\)', '\1_\2', 'g' )
+    let cfile = substitute( cfile, '\(\l\|\d\)\(\u\)', '\1_\2', 'g' )
+    return tolower( cfile ) . '.rb'
+  elseif getline('.') =~# '^\s*require_relative\s*\(["'']\).*\1\s*$'
+    let cfile = expand("%:p:h") . '/' . matchstr( getline('.'), '\(["'']\)\zs.\{-\}\ze\1' ) . ext
+  elseif getline('.') =~# '^\s*\%(require[( ]\|load[( ]\|autoload[( ]:\w\+,\)\s*\%(::\)\=File\.expand_path(\(["'']\)\.\./.*\1,\s*__FILE__)\s*$'
+    let target = matchstr( getline('.'), '\(["'']\)\.\.\zs/.\{-\}\ze\1' )
+    let cfile = expand("%:p:h") . target . ext
+  elseif getline('.') =~# '^\s*\%(require \|load \|autoload :\w\+\)\s*\(["'']\).*\1\s*$'
+    let cfile = matchstr( getline('.'), '\(["'']\)\zs.\{-\}\ze\1' ) . ext
+  elseif (pre . post) =~# '\<File.expand_path[( ].*[''"]\{2\}, *__FILE__\>' && cfile =~# '^\.\.'
+    let cfile = expand("%:p:h") . strpart(cfile, 2)
+  else
+    return substitute( cfile, '\C\v^(.*):(\d+)%(:in)=$', '+\2 \1', '' )
+  endif
+  let cwdpat = '^\M' . substitute( getcwd(), '[\/]', '\\[\\/]', 'g' ) . '\ze\[\/]'
+  let cfile = substitute( cfile, cwdpat, '.', '' )
+
+  if fnameescape( cfile ) !=# cfile
+    return '+ ' . fnameescape(cfile)
+  else
+    return cfile
+  endif
+endfunction
+
+
+"
+" Instructions for enabling "matchit" support:
+"
+" 1. Look for the latest "matchit" plugin at
+"
+"         http://www.vim.org/scripts/script.php?script_id=39
+"
+"    It is also packaged with Vim, in the $VIMRUNTIME/macros directory.
+"
+" 2. Copy "matchit.txt" into a "doc" directory (e.g. $HOME/.vim/doc).
+"
+" 3. Copy "matchit.vim" into a "plugin" directory (e.g. $HOME/.vim/plugin).
+"
+" 4. Ensure this file (ftplugin/ruby.vim) is installed
+"
+" 5. Ensure you have this line in your $HOME/.vimrc:
+"         filetype plugin on
+"
+" 6. Restart Vim and create the matchit documentation:
+"
+"         :helptags ~/.vim/doc
+"
+"   Now you can do ":help matchit", and you should be able to use "%" on Ruby
+"   keywords.  Try ":echo b:match_words" to be sure.
+"
+" Thanks to Mark J. Reed for the instructions. See ":help vimrc" for the
+" locations of plugin directories, etc., as there are several options, and it
+" differs on Windows.  Email gsinclair@soyabean.com.au if you need help.
+"
