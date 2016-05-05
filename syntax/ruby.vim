@@ -108,3 +108,35 @@ syn match  rubyCapitalizedMethod      "\%(\%(^\|[^.]\)\.\s*\)\@<!\<\u\%(\w\|[^\x
 
 syn match  rubyBlockParameter         "\%(\h\|[^\x00-\x7F]\)\%(\w\|[^\x00-\x7F]\)*"  contained
 syn region rubyBlockParameterList     start="\%(\%(\<do\>\|{\)\s*\)\@<=|"  end="|"   oneline display contains=rubyBlockParameter
+
+syn match  rubyInvalidVariable	      "$[^ A-Za-z_-]"
+syn match  rubyPredefinedVariable     #$[!$&"'*+,./0:;<=>?@\`~]#
+syn match  rubyPredefinedVariable     "$\d\+"											display
+syn match  rubyPredefinedVariable     "$_\>"											display
+syn match  rubyPredefinedVariable     "$-[0FIKadilpvw]\>"									display
+syn match  rubyPredefinedVariable     "$\%(deferr\|defout\|stderr\|stdin\|stdout\)\>"					        display
+syn match  rubyPredefinedVariable     "$\%(DEBUG\|FILENAME\|KCODE\|LOADED_FEATURES\|LOAD_PATH\|PROGRAM_NAME\|SAFE\|VERBOSE\)\>" display
+syn match  rubyPredefinedConstant     "\%(\%(^\|[^.]\)\.\s*\)\@<!\<\%(ARGF\|ARGV\|ENV\|DATA\|FALSE\|NIL\|STDERR\|STDIN\|STDOUT\|TOPLEVEL_BINDING\|TRUE\)\>\%(\s*(\)\@!"
+syn match  rubyPredefinedConstant     "\%(\%(^\|[^.]\)\.\s*\)\@<!\<\%(RUBY_\%(VERSION\|RELEASE_DATE\|PLATFORM\|PATCHLEVEL\|REVISION\|DESCRIPTION\|COPYRIGHT\|ENGINE\)\)\>\%(\s*(\)\@!"
+
+" Normal Regular Expression
+syn region rubyRegexp matchgroup=rubyRegexpDelimiter start="\%(\%(^\|\<\%(and\|or\|while\|until\|unless\|if\|elsif\|when\|not\|then\|else\)\|[;\~=!|&(,{[<>?:*+-]\)\s*\)\@<=/" end="/[iomxneus]*" skip="\\\\\|\\/" contains=@rubyRegexpSpecial fold
+syn region rubyRegexp matchgroup=rubyRegexpDelimiter start="\%(\h\k*\s\+\)\@<=/[ \t=]\@!"                                                                                    end="/[iomxneus]*" skip="\\\\\|\\/" contains=@rubyRegexpSpecial fold
+
+" Generalized Regular Expression
+syn region rubyRegexp matchgroup=rubyRegexpDelimiter start="%r\z([~`!@#$%^&*_\-+=|\:;"',.?/]\)" end="\z1[iomxneus]*" skip="\\\\\|\\\z1" contains=@rubyRegexpSpecial fold
+syn region rubyRegexp matchgroup=rubyRegexpDelimiter start="%r{"				end="}[iomxneus]*"   skip="\\\\\|\\}"   contains=@rubyRegexpSpecial fold
+syn region rubyRegexp matchgroup=rubyRegexpDelimiter start="%r<"				end=">[iomxneus]*"   skip="\\\\\|\\>"   contains=@rubyRegexpSpecial,rubyNestedAngleBrackets,rubyDelimEscape fold
+syn region rubyRegexp matchgroup=rubyRegexpDelimiter start="%r\["				end="\][iomxneus]*"  skip="\\\\\|\\\]"  contains=@rubyRegexpSpecial fold
+syn region rubyRegexp matchgroup=rubyRegexpDelimiter start="%r("				end="\)[iomxneus]*"  skip="\\\\\|\\)"   contains=@rubyRegexpSpecial fold
+syn region rubyRegexp matchgroup=rubyRegexpDelimiter start="%r\z(\s\)"				end="\z1[iomxneus]*" skip="\\\\\|\\\z1" contains=@rubyRegexpSpecial fold
+
+" Normal String
+let s:spell_cluster = exists('ruby_spellcheck_strings') ? ',@Spell' : ''
+execute 'syn region rubyString matchgroup=rubyStringDelimiter start="\"" end="\"" skip="\\\\\|\\\"" fold contains=@rubyStringSpecial' . s:spell_cluster
+execute 'syn region rubyString matchgroup=rubyStringDelimiter start="''" end="''" skip="\\\\\|\\''" fold contains=rubyQuoteEscape'    . s:spell_cluster
+
+" Shell Command Output
+syn region rubyString matchgroup=rubyStringDelimiter start="`" end="`" skip="\\\\\|\\`" contains=@rubyStringSpecial fold
+
+" Generalized Single Quoted String, Symbol and Array of Strings
