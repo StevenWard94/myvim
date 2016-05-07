@@ -3,6 +3,7 @@
 " Maintainer:		Nikolai Weibull <now at bitwi.se>
 " URL:			https://github.com/vim-ruby/vim-ruby
 " Release Coordinator:	Doug Kearns <dougkearns@gmail.com>
+" ------------------------------------------------------------------------------
 
 " 0. Initialization {{{1
 " =================
