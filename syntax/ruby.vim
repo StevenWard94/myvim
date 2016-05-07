@@ -1,4 +1,4 @@
-" vim: nowrap:fo=cr1jb:sw=2:sts=2:ts=8:nolist:
+" vim: nowrap:fo=cr1jb:sw=2:sts=2:ts=8:nolist:indentexpr=:
 " ----------------------------------------------------------------------------------------------------------------------
 "
 " Vim syntax file
@@ -306,4 +306,99 @@ endif
 
 
 " Note: this is a hack to prevent 'keywords' from being highlighted as such when they are called as methods with an explicit receiver
-syn match rubyKeywordAsMethod
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(alias\|and\|begin\|break\|case\|class\|def\|defined\|do\|else\)\>"            transparent contains=NONE
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(elsif\|end\|ensure\|false\|for\|if\|in\|module\|next\|nil\)\>"                transparent contains=NONE
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(not\|or\|redo\|refine\|rescue\|retry\|return\|self\|super\|then\|true\)\>"    transparent contains=NONE
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(undef\|unless\|until\|when\|while\|yield\|BEGIN\|END\|__FILE__\|__LINE__\)\>" transparent contains=NONE
+
+syn match  rubyKeywordAsMethod    "\<\%(alias\|begin\|case\|class\|def\|do\|end\)[?!]"          transparent contains=NONE
+syn match  rubyKeywordAsMethod    "\<\%(if\|module\|refine\|undef\|unless\|until\|while\)[?!]"  transparent contains=NONE
+
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(abort\|at_exit\|attr\|attr_accessor\|attr_reader\)\>"                         transparent contains=NONE
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(attr_writer\|autoload\|callcc\|catch\|caller\)\>" 			      transparent contains=NONE
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(eval\|class_eval\|instance_eval\|module_eval\|exit\)\>"                       transparent contains=NONE
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(extend\|fail\|fork\|include\|lambda\)\>"                                      transparent contains=NONE
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(load\|loop\|prepend\|private\|proc\|protected\)\>"                            transparent contains=NONE
+syn match  rubyKeywordAsMethod    "\%(\%(\.\@<!\.\)\|::\)\_s*\%(public\|require\|require_relative\|raise\|throw\|trap\|using\)\>"             transparent contains=NONE
+
+syn match  rubySymbol             "\%([{(,]\_s*\)\@<=\l\w*[!?]\=::\@!"he=e-1
+syn match  rubySymbol             "[]})\"':]\@<!\%(\h\|[^\x00-x7F]\)\%(\w\[^\x00-\x7F]\)*[!?]\=:[[:space:],]\@="he=e-1
+syn match  rubySymbol             "\%([{(,]\_s*\)\@<=[[:space:],{]\l\w*[!?]\=::\@!"hs=s+1,he=e-1
+syn match  rubySymbol             "[[:space:],{(]\%(\h\[^\x00-\x7F]\)\%(\w\|[^\x00-\x7F]\)*[!?]\=:[[:space:],]\@="hs=s+1,he=e-1
+
+" __END__ Directive
+syn region rubyData   matchgroup=rubyDataDirective  start="^__END__$" end="\%$"   fold
+
+
+hi default link rubyClass                   rubyDefine
+hi default link rubyModule                  rubyDefine
+hi default link rubyMethodExceptional       rubyDefine
+hi default link rubyDefine                  Define
+hi default link rubyFunction                Function
+hi default link rubyConditional             Conditional
+hi default link rubyConditionalModifier     rubyConditional
+hi default link rubyExceptional             rubyConditional
+hi default link rubyRepeat                  Repeat
+hi default link rubyRepeatModifier          rubyRepeat
+hi default link rubyOptionalDo              rubyRepeat
+hi default link rubyControl                 Statement
+hi default link rubyInclude                 Include
+hi default link rubyInteger                 Number
+hi default link rubyASCIICode               Character
+hi default link rubyFloat                   Float
+hi default link rubyBoolean                 Boolean
+hi default link rubyException               Exception
+if !exists('ruby_no_identifiers')
+  hi default link rubyIdentifier            Identifier
+else
+  hi default link rubyIdentifier            NONE
+endif
+hi default link rubyClassVariable           rubyIdentifier
+hi default link rubyConstant                Type
+hi default link rubyGlobalVariable          rubyIdentifier
+hi default link rubyBlockParameter          rubyIdentifier
+hi default link rubyInstanceVariable        rubyIdentifier
+hi default link rubyPredefinedIdentifier    rubyIdentifier
+hi default link rubyPredefinedConstant      rubyPredefinedIdentifier
+hi default link rubyPredefinedVariable      rubyPredefinedIdentifier
+hi default link rubySymbol                  Constant
+hi default link rubyKeyword                 Keyword
+hi default link rubyOperator                Operator
+hi default link rubyBeginEnd                Statement
+hi default link rubyAccess                  Statement
+hi default link rubyAttribute               Statement
+hi default link rubyEval                    Statement
+hi default link rubyPseudoVariable          Constant
+hi default link rubyCapitalizedMethod       rubyLocalVariableOrMethod
+
+hi default link rubyComment                 Comment
+hi default link rubyData                    Comment
+hi default link rubyDataDirective           Delimiter
+hi default link rubyDocumentation           Comment
+hi default link rubyTodo                    Todo
+
+hi default link rubyQuoteEscape             rubyStringEscape
+hi default link rubyStringEscape            Special
+hi default link rubyInterpolationDelimiter  Delimiter
+hi default link rubyNoInterpolation         rubyString
+hi default link rubySharpBang               PreProc
+hi default link rubyRegexpDelimiter         rubyStringDelimiter
+hi default link rubySymbolDelimiter         rubySymbol
+hi default link rubyStringDelimiter         Delimiter
+hi default link rubyHeredoc                 rubyString
+hi default link rubyString                  String
+hi default link rubyRegexpEscape            rubyRegexpSpecial
+hi default link rubyRegexpQuantifier        rubyRegexpSpecial
+hi default link rubyRegexpAnchor            rubyRegexpSpecial
+hi default link rubyRegexpDot               rubyRegexpCharClass
+hi default link rubyRegexpCharClass         rubyRegexpSpecial
+hi default link rubyRegexpSpecial           Special
+hi default link rubyRegexpComment           Comment
+hi default link rubyRegexp                  rubyString
+
+hi default link rubyInvalidVariable         Error
+hi default link rubyError                   Error
+hi default link rubySpaceError              rubyError
+
+
+let b:current_syntax = "ruby"
