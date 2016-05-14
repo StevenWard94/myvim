@@ -16,9 +16,6 @@ bundle/**
 #   extensively incomplete files that vim could potentially attempt to apply, which would cause some issues...
 .tmp/
 
-# ignore the '.local.nvimlog' file since it's just a log for ouput of commands affecting the local repo
-.local.nvimlog
-
 # ignore all files in the 'spell/' directory EXCEPT those for general 'en' and 'en_US' locales
 spell/*
 !spell/README_en.txt
