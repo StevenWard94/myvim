@@ -250,10 +250,6 @@
     autocmd FileType haskell :setlocal commentstring=--\ %s
     autocmd FileType haskell,rust :if &spell | setlocal nospell | endif
   augroup END
-
-  " some special settings for bash scripts
-  " TODO: this should really go in its own ftplugin/ file...
-  autocmd FileType sh :setlocal nopaste nowrap formatoptions=r1jb noexpandtab shiftwidth=8 tabstop=8 softtabstop=
 " \end
 
 " Key Mappings & Remappings \begin
