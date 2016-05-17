@@ -33,6 +33,9 @@
     if filereadable(expand("~/.vim/.config/.vimrc.bundles"))
       silent source ~/.vimrc.bundles
     endif
+
+    " enable sourcing of '.exrc' or '.vimrc' config file in local directory
+    set exrc
   " \end
 
   set background=dark
@@ -297,21 +300,21 @@
   "   with the sentence --- these seem more "intuitive" to me when I'm trying to work/remember mappings quickly
   if !exists('g:sw_override_relativewrap') || g:sw_override_relativewrap == 0
     " [essentially] Map a prefixed 'g' to each linewise motion key in Normal, Operator-Pending, and Visual+Select modes
-    noremap $ :call RelativeWrap("$")<CR>
-    noremap <End> :call RelativeWrap("$")<CR>
-    noremap 0 :call RelativeWrap("0")<CR>
-    noremap <Home> :call RelativeWrap("0")<CR>
-    noremap ^ :call RelativeWrap("^")<CR>
+    noremap <silent> $ :call RelativeWrap("$")<CR>
+    noremap <silent> <End> :call RelativeWrap("$")<CR>
+    noremap <silent> 0 :call RelativeWrap("0")<CR>
+    noremap <silent> <Home> :call RelativeWrap("0")<CR>
+    noremap <silent> ^ :call RelativeWrap("^")<CR>
     " the following 2 override the above mappings for $ and <End> in Operator-Pending mode to
     "   force inclusive motion when used with ':execute normal!'
-    onoremap $ v:call RelativeWrap("$")<CR>
-    onoremap <End> v:call RelativeWrap("$")<CR>
+    onoremap <silent> $ v:call RelativeWrap("$")<CR>
+    onoremap <silent> <End> v:call RelativeWrap("$")<CR>
     " now override Visual+Select mode mappings for all keys to ensure RelativeWrap() executes with a correct 'vsel' value
-    vnoremap $ :<C-U>call RelativeWrap("$", 1)<CR>
-    vnoremap <End> :<C-U>call RelativeWrap("$", 1)<CR>
-    vnoremap 0 :<C-U>call RelativeWrap("0", 1)<CR>
-    vnoremap <Home> :<C-U>call RelativeWrap("0", 1)<CR>
-    vnoremap ^ :<C-U>call RelativeWrap("^", 1)<CR>
+    vnoremap <silent> $ :<C-U>call RelativeWrap("$", 1)<CR>
+    vnoremap <silent> <End> :<C-U>call RelativeWrap("$", 1)<CR>
+    vnoremap <silent> 0 :<C-U>call RelativeWrap("0", 1)<CR>
+    vnoremap <silent> <Home> :<C-U>call RelativeWrap("0", 1)<CR>
+    vnoremap <silent> ^ :<C-U>call RelativeWrap("^", 1)<CR>
   endif
 
   " Some helpful "autocorrects" for capitalization mistaked in commands
@@ -412,5 +415,4 @@
       unlet vsel
     endfunction
   endif
-
 " \end
