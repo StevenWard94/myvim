@@ -1,11 +1,6 @@
 # .gitignore file for StevenWard94/.myvim -- local: ~/.vim/
 # a description will precede each pattern listed here
 
-# ignore all "dotfiles" in the main repository directory (other than .gitignore & .git)
-.*
-!.gitignore
-!.*/
-
 # ignore all files & directories within the 'colors/' directory BUT NOT THE DIRECTORY ITSELF
 colors/**
 

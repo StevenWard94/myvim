@@ -27,10 +27,10 @@
   endif
 
   " use 'helper configs' if they exist \begin
-    if filereadable(expand("~/.vim/.config/.vimrc.before"))
+    if filereadable(expand("~/.vimrc.before"))
       silent source ~/.vimrc.before
     endif
-    if filereadable(expand("~/.vim/.config/.vimrc.bundles"))
+    if filereadable(expand("~/.vimrc.bundles"))
       silent source ~/.vimrc.bundles
     endif
 

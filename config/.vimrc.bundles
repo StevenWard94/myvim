@@ -1,0 +1,58 @@
+" vim: fo-=oql:foldmarker=\\begin,\\end:foldmethod=marker:foldlevel=0:nospell:
+" ------------------------------------------------------------------------------
+" Vim bundles configuration file
+" Language:       N/A
+" Maintainer:     Steven Ward <stevenward94@gmail.com>
+" URL:            https://github.com/stevenward94/myvim
+" ------------------------------------------------------------------------------
+
+" Environment \begin1
+
+  " Basics \begin2
+    set nocompatible
+    set background=dark
+  " \end2
+
+  " Windows Compatibility \begin2
+    " tells Vim to use '.vim' directory on Windows (instead of 'vimfiles')
+    " doing this makes it easier to sync across both sides of my system
+    if has('win32') || has('win64')
+      set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+
+      " check for multi_byte support just in case - although the config mostly requires it...
+      if has('multi_byte')
+        " On Windows, cmd.exe still uses cp850 -- powershell uses utf-8 but it is not yet the primary terminal for Win
+        set termencoding=cp850
+        " Vim still needs to be able to use utf-8 internally for scripts (many of which require utf-8 encoding...)
+        set encoding=utf-8
+        setglobal fileencoding=utf-8
+        " Newer Windows systems may have utf-8 or utf-16 LE, so we try those first
+        " Older Windows systems have (historically) used cp1252, so this should be our primary fallback
+        set fileencoding=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
+      endif
+    endif
+  " \end2
+
+  " Enable Bundle Support \begin2
+    " this enables using pathogen and the bundle/ directory to load plugins, add-ons, etc.
+    execute pathogen#infect()
+  " \end2
+" \end1
+
+" Plugin-Specifig Configurations \begin1
+
+  " Syntastic \begin2
+    map <Leader>s :SyntasticToggleMode<CR>
+
+    set statusline+=%#warningmsg#
+    set statusline+=%{SyntasticStatuslineFlag()}
+    set statusline+=%*
+
+    let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_auto_loc_list = 0
+    let g:syntastic_check_on_open = 1
+    let g:syntastic_check_on_wq = 0
+  " \end2
+
+  " GHC-Mod \begin2
+    map <silent> <Leader>tw :GhcModTypeInsert<CR>
