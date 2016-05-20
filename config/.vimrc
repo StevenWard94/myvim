@@ -156,11 +156,6 @@
             \ ]
     endif
   " \end
-
-  " fix this up
-  set tw=120 fo=cr1jb wm=0 et sw=4 ts=4 sts=4
-  set nowrap nopaste autoindent smartindent
-
 " \end
 
 " User Interface Settings \begin
@@ -212,8 +207,6 @@
   set winminheight=0
   set ignorecase
   set smartcase
-  set wildmenu
-  set wildmode=list:longest,full                  " show a list of possible completions (longest matches then all) instead of auto-completing
   set whichwrap=b,s,h,l,<,>,[,]
   set scrolljump=-10                              " when cursor leaves screen (not <C-E>, etc.) auto-scroll 10% winheight
   set scrolloff=3
@@ -223,7 +216,7 @@
 " \end
 
 " Text Formatting Settings \begin
-  set nowrap
+  set nowrap nopaste
   set autoindent smartindent
   set formatoptions=cr1jb
   set textwidth=120 wrapmargin=0
@@ -234,6 +227,12 @@
   "set matchpairs+=<:>                             " add '<' & '>' to list of matching pairs for use w/ '%'
   set pastetoggle=<F12>                           " enable toggling between ':set paste' & ':set nopaste' with F12 key
   "set comments=sl:/*,mb:*,elx*/                  " autoformat comment blocks -- no guarantees, idk what this does
+
+  set completeopt=menuone,menu,longest
+
+  set wildignore+=*\\tmp\\*,*.swp,*.swo,*.zip,.git,.cabal-sandbox
+  set wildmenu
+  set wildmode=list:longest,full                  " show a list of possible completions (longest matches then all) instead of auto-completing
 
   " Function & autocommands to strip whitespace \begin
     if !exists('g:sw_override_stripwsp') || g:sw_override_stripwsp == 0
