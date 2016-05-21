@@ -55,4 +55,44 @@
   " \end2
 
   " GHC-Mod \begin2
-    map <silent> <Leader>tw :GhcModTypeInsert<CR>
+    map <silent> tw :GhcModTypeInsert<CR>
+    map <silent> ts :GhcModSplitFunCase<CR>
+    map <silent> tq :GhcModType<CR>
+    map <silent> te :GhcModTypeClear<CR>
+  " \end2
+
+  " SuperTab \begin2
+    let g:SuperTabDefaultCompletionType = '<C-X><C-O>'
+
+    if has('gui_running')
+      imap <C-Space> <C-R>=SuperTabAlternateCompletion("\<lt>C-X>\<lt>C-O>")<CR>
+    else      " i.e. !has('gui_running')
+      if has('unix')
+        inoremap <Nul> <C-R>=SuperTabAlternateCompletion("\<lt>C-X>\<lt>C-O>")<CR>
+      endif
+    endif
+
+    " configure SuperTab to dispatch to neco-ghc's tab completion instead of the usual local variable completion
+    let g:haskellmode_completion_ghc = 1
+    autocmd FileType haskell :setlocal omnifunc=necoghc#omnifunc
+  " \end2
+
+  " NERDTree \begin2
+    map <leader>n :NERDTreeToggle<CR>
+  " \end2
+
+  " Tabularize \begin2
+    let g:haskell_tabular = 1
+
+    vmap a= :Tabularize /=<CR>
+    vmap a; :Tabularize /::<CR>
+    vmap a- :Tabularize /-><CR>
+  " \end2
+
+  " Ctrl-p \begin2
+    " binds the ctrl-p 'fuzzy search' panel to <leader>t (in my case ',t')
+    map <silent> <leader>t :CtrlP()<CR>
+    noremap <leader>b<Space> :CtrlPBuffer<CR>
+    let g:ctrlp_custom_ignore = '\v[\/]dist$'
+  " \end2
+" \end1
