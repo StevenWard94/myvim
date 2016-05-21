@@ -1,7 +1,7 @@
-" vim: nowrap:tw=120:fo=cr1jb:expandtab:sw=2:sts=2:ts=8:nolist:
+" vim: nowrap:tw=120:fo=cr1jb:expandtab:sw=2:sts=2:ts=8:nolist:foldmarker=\\begin,\\end:fdm=marker:fdl=0:
 " ---------------------------------------------------------------------------------------------
 "
-" Vim syntax file
+" Vim syntax file \begin1
 "
 " Modification of Vim's Haskell syntax file:
 "   - match types using regexp
@@ -45,6 +45,7 @@
 "                           preprocessor directives but assume them to
 "                           be operators
 "
+" \end1
 " ---------------------------------------------------------------------------------------------
 
 if version < 600
@@ -63,11 +64,11 @@ syn region hsString             start=+"+  skip=+\\\\\|\\"+  end=+"+  contains=h
 syn match  hsCharacter          "[^a-zA-Z0-9_']'\([^\\]\|\\[^']\+\|\\'\)'"lc=1  contains=hsSpecialChar,hsSpecialCharError
 syn match  hsCharacter          "^'\([^\\]\|\\[^']\+\|\\'\)'"  contains=hsSpecialChar,hsSpecialCharError
 
-" (Qualified) identifiers (no default highlighting)
+" (Qualified) identifiers \begin1 (no default highlighting)
 syn match  ConId  "\(\<[A-Z][a-zA-Z0-9_']*\.\)\=\<[A-Z][a-zA-Z0-9_']*\>"
 syn match  VarId  "\(\<[A-Z][a-zA-Z0-9_']*\.\)\=\<[a-z][a-zA-Z0-9_']*\>"
 
-" Infix operators -- most punctuation characters and any (qualified) identifier
+" Infix operators \begin1 -- most punctuation characters and any (qualified) identifier
 " enclosed in `backquotes`. An operator starting with : is a constructor,
 " others are variables (e.g. functions).
 syn match hsVarSym "\(\<[A-Z][a-zA-Z0-9_']*\.\)\=[-!#$%&\*\+/<=>\?@\\^|~.][-!#$%&\*\+/<=>\?@\\^|~:.]*"
@@ -75,12 +76,12 @@ syn match hsConSym "\(\<[A-Z][a-zA-Z0-9_']*\.\)\=:[-!#$%&\*\+./<=>\?@\\^|~:]*"
 syn match hsVarSym "`\(\<[A-Z][a-zA-Z0-9_']*\.\)\=[a-z][a-zA-Z0-9_']*`"
 syn match hsConSym "`\(\<[A-Z][a-zA-Z0-9_']*\.\)\=[A-Z][a-zA-Z0-9_']*`"
 
-" Top-Level Template Haskell support
+" Top-Level Template Haskell support \begin1
 syn match hsTHIDTopLevel    "^[a-z]\S*"
 syn match hsTHTopLevel      "^\$(\?"    nextgroup=hsTHTopLevelName
 syn match hsTHTopLevelName  "[a-z]\S*"  contained
 
-" Reserved symbols -- cannot be overloaded
+" Reserved symbols \begin1 -- cannot be overloaded
 syn match   hsDelimiter   "(\|)\|\[\|\]\|,\|;\|_\|{\|}"
 
 syn region  hsInnerParen  start="(" end=")" contained contains=hsInnerParen,hsConSym,hsType,hsVarSym
@@ -147,7 +148,7 @@ syn region  hsImportParams  start="(" end=")" contained contains=hsBlockComment,
 "hi hsModuleName      guibg=bg
 
 
-" New module highlighting
+" New module highlighting \begin1
 syn region  hsDelimTypeExport   start="\<[A-Z]\(\S\&[^,.]\)*\>("  end=")"   contained contains=hsType
 
 syn keyword hsExportModuleLabel module  contained
@@ -160,3 +161,28 @@ syn match   hsModuleStart       "^module\(\s\|\n\)*\(\<\(\w\|\.\)*\>\)\(\s\|\n\)
 
 syn region  hsModuleCommentA    start="{-"  end="-}"  contains=hsModuleCommentA,hsCommentTodo,@Spell contained  nextgroup=hsModuleCommentA,hsModuleExports,hsModuleWhereLabel   skipwhite skipnl
 syn match   hsModuleCommentA    "--.*\n"  contains=hsCommentTodo,@Spell contained   nextgroup=hsModuleCommentA,hsModuleExports,hsModuleWhereLabel   skipwhite skipnl
+
+syn region  hsModuleExports     start="(" end=")" contained
+      \ nextgroup=hsModuleCommentB,hsModuleWhereLabel   skipwhite skipnl
+      \ contains=hsBlockComment,hsLineComment,hsType,hsDelimTypeExport,hs_hlFunctionName,hs_OpFunctionName,hsExportModule
+
+syn match   hsModuleCommentB    "--.*\n"  contains=hsCommentTodo,@Spell contained nextgroup=hsModuleCommentB,hsModuleWhereLabel   skipwhite skipnl
+syn region  hsModuleCommentB    start="{-" end="-}"   contains=hsModuleCommentB,hsCommentTodo,@Spell contained nextgroup=hsModuleCommentB,hsModuleWhereLabel  skipwhite skipnl
+" \end1 module highlighting
+
+" FFI Support \begin1
+syn keyword hsFFIForeign        foreign         contained
+syn keyword hsFFIImportExport   export          contained
+syn keyword hsFFICallConvention ccall stdcall   contained
+syn keyword hsFFISafety         safe unsafe     contained
+
+syn region  hsFFIString       start=+"+  skip=+\\\\\|\\"+  end=+"+    contained contains=hsSpecialChar
+syn match   hsFFI excludenl   "\<foreign\>\(.\&[^\"]\)*\"\(.\)*\"\(.\)*\"\(\s\|\n\)*\(.\)*::"
+      \ keepend   contains=hsFFIForeign,hsFFIImportExport,hsFFICallConvention,hsFFISafety,hsFFIString,hs_OpFunctionName,hs_hlFunctionName
+" \end1
+
+syn match   hsNumber            "\<[0-9]\+\>\|\<0[xX][0-9a-fA-F]\+\>\|\<0[oO][0-7]\+\>"
+syn match   hsFloat             "\<[0-9]\+\.[0-9]\+\([eE][-+]\=[0-9]\+\)\=\>"
+
+" Comments \begin1
+syn keyword hsCommentTodo       TODO FIXME XXX TBD  contained
