@@ -68,7 +68,8 @@
       imap <C-Space> <C-R>=SuperTabAlternateCompletion("\<lt>C-X>\<lt>C-O>")<CR>
     else      " i.e. !has('gui_running')
       if has('unix')
-        inoremap <Nul> <C-R>=SuperTabAlternateCompletion("\<lt>C-X>\<lt>C-O>")<CR>
+        " this was pissing me off so it's omitted until I actually set-up autocompletion properly
+        "inoremap <Nul> <C-R>=SuperTabAlternateCompletion("\<lt>C-X>\<lt>C-O>")<CR>
       endif
     endif
 
