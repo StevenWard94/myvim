@@ -148,3 +148,73 @@ snippet derive
 		{-# LANGUAGE DeriveFoldable #-}
 
 snippet type
+		{-# LANGUAGE GADTs #-}
+		{-# LANGUAGE TypeFamilies #-}
+		{-# LANGUAGE TypeOperators #-}
+		{-# LANGUAGE DataKinds #-}
+		{-# LANGUAGE PolyKinds #-}
+		{-# LANGUAGE KindSignatures #-}
+		{-# LANGUAGE FlexibleInstances #-}
+		{-# LANGUAGE FlexibleContexts #-}
+		{-# LANGUAGE UndecidableInstances #-}
+
+		import GHC.TypeLits
+		import Data.Proxy
+		import Data.Type.Equality
+		import Data.Reflection
+		import Data.Constraint
+		import GHC.Exts (Constraint)
+		import GHC.Prim (Any, AnyK)
+
+snippet crazy
+		{-# LANGUAGE GADTs #-}
+		{-# LANGUAGE DataKinds #-}
+		{-# LANGUAGE RankNTypes #-}
+		{-# LANGUAGE TypeFamilies #-}
+		{-# LANGUAGE TypeOperators #-}
+		{-# LANGUAGE KindSignatures #-}
+		{-# LANGUAGE FlexibleInstances #-}
+		{-# LANGUAGE FlexibleContexts #-}
+		{-# LANGUAGE MultiParamTypeClasses #-}
+		{-# LANGUAGE UndecidableInstances #-}
+		{-# LANGUAGE ExistentialQuantification #-}
+
+snippet main
+		main = return ()
+
+snippet opt
+		{-# OPTIONS_GHC ${1} #-}
+
+snippet wall
+		{-# OPTIONS_GHC -Wall #-}
+
+snippet nowarn
+		{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
+		{-# OPTIONS_GHC -fno-warn-type-defaults #-}
+		{-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
+
+snippet box
+		--------------------------------------------------------------------------------
+		-- |
+		-- Module    :
+		-- Copyright :  (c) <author> 2016
+		-- License   :  Apache License, 2.0
+		-- Maintainer:  <email>
+		-- Stability :  experimental
+		-- Portability: non-portable
+		--
+		--------------------------------------------------------------------------------
+
+snippet dd
+		deriving (Eq, Ord, Show, Typeable, Data, Generic)
+
+snippet inl
+		{-# INLINE ${1} #-}
+
+snippet up
+		{-# UNPACK #-}
+
+snippet un
+		undefined
+snippet er
+		error "${1}"
