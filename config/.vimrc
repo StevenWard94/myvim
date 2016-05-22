@@ -246,6 +246,13 @@
 
   autocmd BufNewFile,BufRead *.coffee set filetype=coffee
 
+  " special settings for git* filetypes
+  " TODO: make ftplugin file for this
+  augroup git_set
+    autocmd!
+    autocmd FileType git,gitconfig,gitcommit :setlocal nolist tw=88 fo=ctro1jbq sw=4 ts=4 noexpandtab spell
+  augroup END
+
   " workarounds for vim-commentary and broken highlighting with Haskell
   augroup haskell_fixes
     autocmd!
