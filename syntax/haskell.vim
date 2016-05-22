@@ -67,6 +67,7 @@ syn match  hsCharacter          "^'\([^\\]\|\\[^']\+\|\\'\)'"  contains=hsSpecia
 " (Qualified) identifiers \begin1 (no default highlighting)
 syn match  ConId  "\(\<[A-Z][a-zA-Z0-9_']*\.\)\=\<[A-Z][a-zA-Z0-9_']*\>"
 syn match  VarId  "\(\<[A-Z][a-zA-Z0-9_']*\.\)\=\<[a-z][a-zA-Z0-9_']*\>"
+" \end1
 
 " Infix operators \begin1 -- most punctuation characters and any (qualified) identifier
 " enclosed in `backquotes`. An operator starting with : is a constructor,
@@ -75,11 +76,13 @@ syn match hsVarSym "\(\<[A-Z][a-zA-Z0-9_']*\.\)\=[-!#$%&\*\+/<=>\?@\\^|~.][-!#$%
 syn match hsConSym "\(\<[A-Z][a-zA-Z0-9_']*\.\)\=:[-!#$%&\*\+./<=>\?@\\^|~:]*"
 syn match hsVarSym "`\(\<[A-Z][a-zA-Z0-9_']*\.\)\=[a-z][a-zA-Z0-9_']*`"
 syn match hsConSym "`\(\<[A-Z][a-zA-Z0-9_']*\.\)\=[A-Z][a-zA-Z0-9_']*`"
+" \end1
 
 " Top-Level Template Haskell support \begin1
 syn match hsTHIDTopLevel    "^[a-z]\S*"
 syn match hsTHTopLevel      "^\$(\?"    nextgroup=hsTHTopLevelName
 syn match hsTHTopLevelName  "[a-z]\S*"  contained
+" \end1
 
 " Reserved symbols \begin1 -- cannot be overloaded
 syn match   hsDelimiter   "(\|)\|\[\|\]\|,\|;\|_\|{\|}"
@@ -146,7 +149,7 @@ syn region  hsImportParams  start="(" end=")" contained contains=hsBlockComment,
 "hi hsImportParams    guibg=bg
 "hi hsImportIllegal   guibg=bg
 "hi hsModuleName      guibg=bg
-
+" \end1
 
 " New module highlighting \begin1
 syn region  hsDelimTypeExport   start="\<[A-Z]\(\S\&[^,.]\)*\>("  end=")"   contained contains=hsType
@@ -186,3 +189,142 @@ syn match   hsFloat             "\<[0-9]\+\.[0-9]\+\([eE][-+]\=[0-9]\+\)\=\>"
 
 " Comments \begin1
 syn keyword hsCommentTodo       TODO FIXME XXX TBD  contained
+syn match   hsLineComment       "---*\([^-!#$%&\*\+./<=>\?@\\^[~].*\)\?$"   contains=hsCommentTodo,@Spell
+syn region  hsBlockComment      start="{-"  end="-}"  contains=hsBlockComment,hsCommentTodo,@Spell
+syn region  hsPragma            start="{-#" end="#-}"
+" \end1
+
+" QuasiQuotation \begin1
+syn region  hsQQ          start="\[\$" end="|\]"me=e-2  keepend contains=hsQQVarID,hsQQContent nextgroup=hsQQEnd
+syn region  hsQQNew       start="\[\(.\&[^|]\&\S\)*|" end="|\]"me=e-2   keepend contains=hsQQVarIDNew,hsQQContent nextgroup=hsQQEnd
+syn match   hsQQContent   ".*"  contained
+syn match   hsQQEnd       "|\]" contained
+syn match   hsQQVarID     "\[\$\(.\&[^|]\)*|"   contained
+syn match   hsQQVarIDNew  "\[\(.\&[^|]\)*|"     contained
+
+if exists('hs_highlight_debug')
+  " Debugging functions from the standard prelude
+  syn keyword hsDebug   undefined error trace
+endif
+" \end1
+
+" C Preprocessor Directives \begin1 -- shamelessly ripped from 'c.vim' and trimmed
+" First, see whether to flag directive-like lines or not
+if !exists('hs_allow_hash_operator')
+  syn match cError          display "^\s*\(%:\|#\).*$"
+endif
+" Accept %: for # (C99)
+syn region  cPreCondit      start="^\s*\(%:\|#\)\s*\(if\|ifdef\|ifndef\|elif\)\>" skip="\\$" end="$" end="//"me=s-1 contains=cComment,cCppString,cCommentError
+syn match   cPreCondit      display "^\s*\(%:\|#\)\s*\(else\|endif\)\>"
+syn region  cCppOut         start="^\s*\(%:\|#\)\s*if\s\+0\+\>" end=".\@=\|$" contains=cCppOut2
+syn region  cCppOut2        contained start="0" end="^\s*\(%:\|#\)\s*\(endif\>\|else\>\|elif\>\)" contains=cCppSkip
+syn region  cCppSkip        contained start="^\s*\(%:\|#\)\s*\(if\>\|ifdef\>\|ifndef\>\)" skip="\\$" end="^\s*\(%:\|#\)\s*endif\>" contains=cCppSkip
+syn region  cIncluded       display contained start=+"+ skip=+\\\\\|\\"+ end=+"+
+syn match   cIncluded       display contained "<[^>]*>"
+syn match   cInclude        display "^\s*\(%:\|#\)\s*include\>\s*["<]" contains=cIncluded
+syn cluster cPreProcGroup   contains=cPreCondit,cIncluded,cInclude,cDefine,cCppOut,cCppOut2,cCppSkip,cCommentStartError
+syn region  cDefine         matchgroup=cPreCondit start="^\s*\(%:\|#\)\s*\(define\|undef\)\>" skip="\\$" end="$"
+syn region  cPreProc        matchgroup=cPreCondit start="^\s*\(%:\|#\)\s*\(pragma\>\|line\>\|warning\>\|warn\>\|error\>\)" skip="\\$" end="$" keepend
+
+syn region  cComment        matchgroup=cCommentStart start="/\*" end="\*/" contains=cCommentStartError,cSpaceError contained
+syn match   cCommentError   display "\*/" contained
+syn match   cCommentStartError display "/\*"me=e-1 contained
+syn region  cCppString      start=+L\="+ skip=+\\\\\|\\"\|\\$+ excludenl end=+"+ end='$' contains=cSpecial contained
+" \end1
+
+if version >= 508 || !exists('did_hs_syntax_inits') " \begin1
+  if version < 508
+    let did_hs_syntax_inits = 1
+    command -nargs=+ HiLink hi link <args>
+  else
+    command -nargs=+ HiLink hi def link <args>
+  endif
+
+  HiLink hs_hlFunctionName      Function
+  HiLink hs_HighliteInfixFunctionName   Function
+  HiLink hs_HlInfixOp           Function
+  HiLink hs_OpFunctionName      Function
+  HiLink hsTypedef              Typedef
+  HiLink hsVarSym               hsOperator
+  HiLink hsConSym               hsOperator
+  if exists('hs_highlight_delimiters')
+    " some people find this highlighting distracting
+    HiLink hsDelimiter          Delimiter
+  endif
+
+  HiLink hsModuleStartLabel   Structure
+  HiLink hsExportModuleLabel  Keyword
+  HiLink hsModuleWhereLabel   Structure
+  HiLink hsModuleName         Normal
+
+  HiLink hsImportIllegal      Error
+  HiLink hsAsLabel            hsImportLabel
+  HiLink hsHidingLabel        hsImportLabel
+  HiLink hsImportLabel        Include
+  HiLink hsImportMod          Include
+  HiLink hsPackageString      hsString
+
+  HiLink hsOperator           Operator
+
+  HiLink hsInfix              Keyword
+  HiLink hsStructure          Structure
+  HiLink hsStatement          Statement
+  HiLink hsConditional        Conditional
+
+  HiLink hsSpecialCharError   Error
+  HiLink hsSpecialChar        SpecialChar
+  HiLink hsString             String
+  HiLink hsFFIString          String
+  HiLink hsCharacter          Character
+  HiLink hsNumber             Number
+  HiLink hsFloat              Float
+
+  HiLink hsLiterateComment    hsComment
+  HiLink hsBlockComment       hsComment
+  HiLink hsLineComment        hsComment
+  HiLink hsModuleCommentA     hsComment
+  HiLink hsModuleCommentB     hsComment
+  HiLink hsComment            Comment
+  HiLink hsCommentTodo        Todo
+  HiLink hsPragma             SpecialComment
+  HiLink hsBoolean            Boolean
+
+  if exists('hs_highlight_types')
+    HiLink hsDelimTypeExport  hsType
+    HiLink hsType             Type
+  endif
+
+  HiLink hsDebug              Debug
+  
+  HiLink cCppString           hsString
+  HiLink cCommentStart        hsComment
+  HiLink cCommentError        hsError
+  HiLink cCommentStartError   hsError
+  HiLink cInclude             Include
+  HiLink cPreProc             PreProc
+  HiLink cDefine              Macro
+  HiLink cIncluded            hsString
+  HiLink cError               Error
+  HiLink cPreCondit           PreCondit
+  HiLink cComment             Comment
+  HiLink cCppSkip             cCppOut
+  HiLink cCppOut2             cCppOut
+  HiLink cCppOut              Comment
+
+  HiLink hsFFIForeign         Keyword
+  HiLink hsFFIImportExport    Structure
+  HiLink hsFFICallConvention  Keyword
+  HiLink hsFFISafety          Keyword
+
+  HiLink hsTHIDTopLevel       Macro
+  HiLink hsTHTopLevelName     Macro
+
+  HiLink hsQQVarID            Keyword
+  HiLink hsQQVarIDNew         Keyword
+  HiLink hsQQEnd              Keyword
+  HiLink hsQQContent          String
+
+  delcommand HiLink
+endif
+
+let b:current_syntax = "haskell"
