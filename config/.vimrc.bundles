@@ -6,37 +6,29 @@
 " URL:            https://github.com/stevenward94/myvim
 " ------------------------------------------------------------------------------
 
-" Environment \begin1
+" Setup \begin1
+  set nocompatible
+  filetype off
+  
+  " Load Plugins using Vundle
+  call vundle#begin('~/.vim/bundle')
 
-  " Basics \begin2
-    set nocompatible
-    set background=dark
-  " \end2
+  Plugin 'VundleVim/Vundle.vim'
+  Plugin 'scrooloose/syntastic'
+  Plugin 'eagletmt/ghcmod-vim'
+  Plugin 'eagletmt/neco-ghc'
+  Plugin 'ctrlpvim/ctrlp.vim'
+  Plugin 'tomtom/tlib_vim.git'
+  Plugin 'MarcWeber/vim-addon-mw-utils'
+  Plugin 'garbas/vim-snipmate'
+  Plugin 'scrooloose/nerdtree'
+  Plugin 'scrooloose/nerdcommenter'
+  Plugin 'godlygeek/tabular'
+  Plugin 'Shougo/neocomplete.vim'
+  Plugin 'tpope/vim-fugitive'
 
-  " Windows Compatibility \begin2
-    " tells Vim to use '.vim' directory on Windows (instead of 'vimfiles')
-    " doing this makes it easier to sync across both sides of my system
-    if has('win32') || has('win64')
-      set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
-
-      " check for multi_byte support just in case - although the config mostly requires it...
-      if has('multi_byte')
-        " On Windows, cmd.exe still uses cp850 -- powershell uses utf-8 but it is not yet the primary terminal for Win
-        set termencoding=cp850
-        " Vim still needs to be able to use utf-8 internally for scripts (many of which require utf-8 encoding...)
-        set encoding=utf-8
-        setglobal fileencoding=utf-8
-        " Newer Windows systems may have utf-8 or utf-16 LE, so we try those first
-        " Older Windows systems have (historically) used cp1252, so this should be our primary fallback
-        set fileencoding=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
-      endif
-    endif
-  " \end2
-
-  " Enable Bundle Support \begin2
-    " this enables using pathogen and the bundle/ directory to load plugins, add-ons, etc.
-    execute pathogen#infect()
-  " \end2
+  call vundle#end()
+  filetype plugin indent on
 " \end1
 
 " Plugin-Specifig Configurations \begin1
