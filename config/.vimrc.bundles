@@ -8,27 +8,25 @@
 
 " Setup \begin1
   set nocompatible
-  filetype off
-  
-  " Load Plugins using Vundle
-  call vundle#begin('~/.vim/bundle')
 
-  Plugin 'VundleVim/Vundle.vim'
-  Plugin 'scrooloose/syntastic'
-  Plugin 'eagletmt/ghcmod-vim'
-  Plugin 'eagletmt/neco-ghc'
-  Plugin 'ctrlpvim/ctrlp.vim'
-  Plugin 'tomtom/tlib_vim.git'
-  Plugin 'MarcWeber/vim-addon-mw-utils'
-  Plugin 'garbas/vim-snipmate'
-  Plugin 'scrooloose/nerdtree'
-  Plugin 'scrooloose/nerdcommenter'
-  Plugin 'godlygeek/tabular'
-  Plugin 'Shougo/neocomplete.vim'
-  Plugin 'tpope/vim-fugitive'
+  " Setup plug-vim (https://github.com/junegunn/vim-plug
+  call plug#begin('~/.vim/bundle')
 
-  call vundle#end()
-  filetype plugin indent on
+  Plug 'VundleVim/Vundle.vim'
+  Plug 'scrooloose/syntastic'
+  Plug 'eagletmt/ghcmod-vim'
+  Plug 'eagletmt/neco-ghc'
+  Plug 'ctrlpvim/ctrlp.vim'
+  Plug 'tomtom/tlib_vim.git'
+  Plug 'MarcWeber/vim-addon-mw-utils'
+  Plug 'garbas/vim-snipmate'
+  Plug 'scrooloose/nerdtree'
+  Plug 'scrooloose/nerdcommenter'
+  Plug 'godlygeek/tabular'
+  Plug 'Shougo/neocomplete.vim'
+  Plug 'tpope/vim-fugitive'
+
+  call plug#end()
 " \end1
 
 " Plugin-Specifig Configurations \begin1

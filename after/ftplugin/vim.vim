@@ -23,9 +23,7 @@ setlocal formatoptions-=o formatoptions+=1jb
 setlocal textwidth=88
 
 " Setup folding for my usual markers -- \begin . . . \end -- and settings
-if !exists(&foldmarker) || &foldmarker ==? '{{{,}}}'
-  setlocal foldmarker=\\begin,\\end
-endif
+setlocal foldmarker=\\begin,\\end
 setlocal foldmethod=marker
 setlocal foldlevel=0
 

@@ -3,28 +3,6 @@
 " General Settings \begin
 
   set nocompatible        " set this first b/c it changes the values of several options
-  filetype off
-
-  " Load Plugins using Vundle
-  set rtp+=~/.vim/bundle/Vundle.vim
-  call vundle#begin()
-
-  Plugin 'VundleVim/Vundle.vim'
-  Plugin 'scrooloose/syntastic'
-  Plugin 'eagletmt/ghcmod-vim'
-  Plugin 'eagletmt/neco-ghc'
-  Plugin 'ctrlpvim/ctrlp.vim'
-  Plugin 'tomtom/tlib_vim.git'
-  Plugin 'MarcWeber/vim-addon-mw-utils'
-  Plugin 'garbas/vim-snipmate'
-  Plugin 'scrooloose/nerdtree'
-  Plugin 'scrooloose/nerdcommenter'
-  Plugin 'godlygeek/tabular'
-  Plugin 'Shougo/neocomplete.vim'
-  Plugin 'tpope/vim-fugitive'
-
-  call vundle#end()
-  filetype plugin indent on
 
   " identify user's platform ( OSX()->true for mac  LINUX()->true for non-mac/win unix  WINDOWS()->true for win32/64
   execute "silent function! OSX() \n return has('macunix') \n endfunction"
@@ -40,19 +18,17 @@
   endif
 
   " fix arrow-key issues flagged at: " https://github.com/spf13/spf13-vim/issues/780
-  " NOTE: since this file is my '.vimrc' AND 'nvim/init.vim', I use !has('nvim') to hide options and
-  " commands that cause errors in neovim (usually b/c nvim removed an option that still exists in vim)
-  if !has('nvim')
-    if &term[:4] ==? 'xterm' || &term[:5] ==? 'screen' || &term[:3] ==? 'rxvt'
-      inoremap <silent> <C-[>OC <RIGHT>
-    endif
+  if &term[:4] ==? 'xterm' || &term[:5] ==? 'screen' || &term[:3] ==? 'rxvt'
+    inoremap <silent> <C-[>OC <RIGHT>
   endif
 
   " use 'helper configs' if they exist \begin
-    if filereadable(expand("~/.vimrc.before"))
+    if filereadable(expand("~/.vim/config/.vimrc.before"))
       silent source ~/.vimrc.before
     endif
-    if filereadable(expand("~/.vimrc.bundles"))
+
+    " For initialization of plugin manager, see this file (.vim/config/.vimrc.bundles
+    if filereadable(expand("~/.vim/config/.vimrc.bundles"))
       silent source ~/.vimrc.bundles
     endif
 
@@ -73,11 +49,9 @@
     noremap <leader>bg :call ToggleBackground()<CR>
   " \end
 
-  " make sure non-ASCII keys behave correctly ('term' option is 'vim only' - removed in neovim)
-  if !has('nvim')
-    if !has('gui')
-      set term=$TERM
-    endif
+  " make sure non-ASCII keys behave correctly
+  if !has('gui')
+    set term=$TERM
   endif
 
   filetype plugin indent on
@@ -182,15 +156,10 @@
 
 " User Interface Settings \begin
 
-  if &t_Co < 256 | let &t_Co = 256 | endif
-  if !exists('g:sw_override_colors') || g:sw_override_colors == 0
-    if exists('g:molokai_original') | unlet g:molokai_original | endif
-    let g:rehash256 = 1
+  if filereadable(expand("~/.vim/colors/setup.vim"))
+    source ~/.vim/colors/setup.vim
+  elseif filereadable(expand("~/.vim/colors/molokai.vim"))
     colorscheme molokai
-  endif
-
-  if filereadable(expand("~/.nvim/colors/jellybeans.vim"))
-    let g:jellybeans_use_term_italics = !exists('g:jellybeans_use_term_italics') ? 1 : g:jellybeans_use_term_italics
   endif
 
   set tabpagemax=15
