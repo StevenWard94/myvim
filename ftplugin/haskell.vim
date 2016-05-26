@@ -16,6 +16,10 @@
     let hvn_config_dir = $HOME . '/.config/haskell-vim-now'
   endif
 
+  if !isdirectory(expand(hvn_config_dir))
+    execute '! mkdir -p ' . hvn_config_dir
+  endif
+
   " pre-config path
   let hvn_config_pre = expand(resolve(hvn_config_dir . '/vimrc.local.pre'))
   " post-config path
@@ -61,7 +65,113 @@
   let $PATH = expand(hvn_stack_bin) . ':' . $PATH
 " \end1
 
-" VIM-Plug \begin1
-  call plug#begin('~/.vim/bundle')
+" Vim UI for Haskell \begin1
 
-  " Support Bundles
+  " set 7 lines to the cursor for movement with j/k
+  setlocal scrolloff=7
+
+  " always show current position
+  if !&ruler
+    set ruler
+  endif
+  if !&number || !&relativenumber
+    set number relativenumber
+  endif
+
+  " change 'list' option to show whitespace differently
+  setlocal list
+  setlocal listchars=tab:>\ ,trail:-,nbsp:+
+
+  " height of the command bar
+  if &cmdheight > 1
+    setlocal cmdheight=1
+  endif
+
+  " make sure backspace wraps correctly
+  setlocal backspace=eol,start,indent
+  setlocal whichwrap+=<,>,h,l
+
+  " ensure searches act right
+  setlocal ignorecase smartcase
+
+  " highlight search results -- <leader>/ still mapped to 'set invhlsearch<CR>'
+  setlocal hlsearch incsearch
+
+  " turn off 'redraw' when executing macros -- better performance
+  setlocal lazyredraw
+
+  " make sure 'magic' is on
+  setlocal magic
+
+  " show matching brackets and blink them for 2/10 of a second
+  setlocal showmatch matchtime=2
+
+  " turn off terminal bells
+  setlocal noerrorbells
+  setlocal novisualbell t_vb=
+
+  " disable background color erase (BCE) so that colorschemes display properly in
+  " 256-color tmux & GNU screen terminal emulators
+  " see: http://snk.tuxfamily.org/log/vim-256color-bce.html
+  if &term =~ '256color'
+    set t_ut=
+  endif
+
+  " mapping to force redraw
+  map <silent> <leader>r :redraw!<CR>
+
+  " mapping to turn mouse mode on/off
+  nnoremap <leader>ma :set mouse=a<CR>
+  nnoremap <leader>mo :set mouse=<CR>
+  setlocal mouse=a    " default to mouse mode on
+" \end1
+
+" Colors and Fonts for Haskell \begin1
+  try
+    colorscheme wombat256mod
+  catch
+  endtry
+
+  highlight! link SignColumn LineNr
+
+  " use pleasant but easily visible search highlighting
+  highlight   Search  ctermfg=white  ctermbg=173   cterm=NONE  guifg=#ffffff   guibg=#e5786d   gui=NONE
+  highlight!  link Visual Search
+  
+  " match wombat colors in NERDTree
+  highlight   Directory   ctermfg=#8ac6f2
+
+  " searing red -- very visible cursor
+  highlight   Cursor  guibg=red
+
+  " use same color behind concealed unicode characters
+  highlight clear Conceal
+
+  " don't blink cursor when in normal mode
+  set guicursor=n-v-c:block-Cursor
+  set guicursor+=n-v-c:blinkon0
+
+  " extra options for gui
+  if has('gui_running')
+    setlocal guioptions-=T
+    setlocal guioptions-=e
+    setlocal guitablabel=%M\ %t
+  endif
+  set t_Co=256
+
+  " set utf8 as default encoding and en_US as standard language
+  " control block prevents this from occurring in nvim, since that causes issues
+  if !has('nvim')
+    setlocal encoding=utf8
+  endif
+
+  " use UNIX as default file format for eol escapes (<CR>, \n\r, etc.)
+  set fileformats=unix,dos,mac
+
+  " use powerline fonts for airline
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+  let g:airline_powerline_fonts = 1
+  let g:airline_symbols.space = "\ua0"
+" \end1
