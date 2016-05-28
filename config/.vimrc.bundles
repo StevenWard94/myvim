@@ -9,22 +9,61 @@
 " Setup \begin1
   set nocompatible
 
-  " Setup plug-vim (https://github.com/junegunn/vim-plug
+  " Load plugins using vim-plug <https://github.com/junegunn/vim-plug>
   call plug#begin('~/.vim/bundle')
 
-  Plug 'VundleVim/Vundle.vim'
-  Plug 'scrooloose/syntastic'
-  Plug 'eagletmt/ghcmod-vim'
-  Plug 'eagletmt/neco-ghc'
+  " Support Bundles
+  Plug 'jgdavey/tslime.vim'
+  Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+  Plug 'ervandew/supertab', { 'on': [] }      " disabled by default
+  Plug 'benekastah/neomake'
+  Plug 'moll/vim-bbye'
+  Plug 'nathanaelkane/vim-indent-guides'
+  Plug 'vim-scripts/gitignore'
+
+  " Git
+  Plug 'tpope/vim-fugitive'
+  Plug 'int3/vim-extradite'
+
+  " Bars, Panels & Files
+  Plug 'scrooloose/nerdtree'
+  Plug 'bling/vim-airline'
   Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'tomtom/tlib_vim.git'
+  Plug 'majutsushi/tagbar'
+
+  " Text Manipulation
+  Plug 'vim-scripts/Align'
+  Plug 'simnalamburt/vim-mundo'
+  Plug 'tpope/vim-commentary'
+  Plug 'godlygeek/tabular'
+  Plug 'michaeljsmith/vim-indent-object'
+  Plug 'easymotion/vim-easymotion'
+
+  " Plugin to enable jumping out of vim into tmux
+  " NOTE: disabled by default b/c I currently don't have tmux
+  "     : use 'plug#load('vim-tmux-navigator') to load manually
+  Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
+
+  " Haskell -- these only load when filetype is 'haskell'
+  Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+  Plug 'enomsg/vim-haskellConcealPlus', { 'for': 'haskell' }
+  Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
+  Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
+  Plug 'Twinside/vim-hoogle', { 'for': 'haskell' }
+  Plug 'mpickering/hlint-refactor-vim', { 'for': 'haskell' }
+
+  " Colorschemes
+  Plug 'vim-scripts/wombat256.vim'
+  Plug 'tomasr/molokai'
+  Plug 'vim-scripts/colorful256.vim'
+
+  " Recommended by Stephen Diehl
+  Plug 'scrooloose/syntastic'
+  Plug 'tomtom/tlib_vim'
   Plug 'MarcWeber/vim-addon-mw-utils'
   Plug 'garbas/vim-snipmate'
-  Plug 'scrooloose/nerdtree'
   Plug 'scrooloose/nerdcommenter'
-  Plug 'godlygeek/tabular'
   Plug 'Shougo/neocomplete.vim'
-  Plug 'tpope/vim-fugitive'
 
   call plug#end()
 " \end1
@@ -84,6 +123,114 @@
     " binds the ctrl-p 'fuzzy search' panel to <leader>t (in my case ',t')
     map <silent> <leader>t :CtrlP()<CR>
     noremap <leader>b<Space> :CtrlPBuffer<CR>
-    let g:ctrlp_custom_ignore = '\v[\/]dist$'
+    let g:ctrlp_max_files = 0
+    let g:ctrlp_show_hidden = 1
+    let g:ctrlp_custom_ignore = { 'dir': '\v[\/](.git|.cabal-sandbox|.stack-work)$' }
   " \end2
+
+  " Colorscheme Variables \begin2
+
+    " molokai
+    if exists('g:molokai_original')
+      unlet g:molokai_original
+    endif
+    if !exists('g:rehash256') || g:rehash256 == 0
+      let g:rehash256 = 1
+    endif
+
 " \end1
+
+" Helper Functions \begin1
+
+  " function to auto-update vim-plug on vim startup
+  function! s:UpdateVimPlug() abort
+    let l:plugins = g:plugs
+    if !empty(filter(copy(l:plugins), '!isdirectory(v:val.dir)'))
+      silent! PlugInstall
+      execute "normal q"
+    endif
+    unlet l:plugins
+
+    silent PlugUpdate
+    execute "normal q"
+    PlugUpgrade
+    execute "normal \<C-c>"
+  endfunction
+  autocmd VimEnter * :call s:UpdateVimPlug()
+
+
+
+  " use 'H' in vim-plug window to open help docs for plugin under cursor
+  function! s:GetPlugHelpDocs() abort
+    let l:plug_name = matchstr(getline('.'), '^- \zs\S\+\ze:')
+    if has_key(g:plugs, l:plug_name)
+
+      for help_doc in split(globpath(g:plugs[l:plug_name].dir, 'doc/*.txt'), '\n')
+        execute 'tabe' help_doc
+      endfor
+    endif
+    unlet l:plug_name
+  endfunction
+
+  augroup plug_help
+    autocmd!
+    autocmd FileType vim-plug
+          \ nnoremap <buffer> <silent> <leader>H :call <SID>GetPlugHelpDocs()<CR>
+  augroup END
+
+
+
+  " use ',gx' to open a plugin's GitHub URL in browser (also works for commits)
+  function! s:GoToGitHub() abort
+    let l:curline = getline('.')
+    let l:sha = matchstr(l:curline, '^ \X*\zs\x\{7}\ze ')
+    let l:name = empty(l:sha) ? matchstr(l:curline, '^[-x+] \zs[^:]\+\ze:')
+                            \ : getline(search('^- .*:$', 'bn'))[2:-2]
+
+    let l:uri = get(get(g:plugs, l:name, {}), 'uri', '')
+    if l:uri !~ 'github.com'
+      return
+    endif
+
+    let l:github_repo = matchstr(l:uri, '[^:/]*/'.l:name)
+    let l:repo_url = empty(l:sha) ? 'https://github.com/' . l:github_repo
+                                \ : printf('https://github.com/%s/commit/%s', l:github_repo, l:sha)
+    unlet l:curline l:sha l:name l:uri
+
+    call netrw#BrowseX(l:repo_url, 0)
+    unlet l:github_repo l:repo_url
+  endfunction
+
+  augroup plug_gotoGitHub
+    autocmd!
+    autocmd FileType vim-plug
+          \ nnoremap <buffer> <silent> <leader>gx :call <SID>GoToGitHub()<CR>
+  augroup END
+
+
+
+  " function to scroll vim-plug preview window
+  function! s:PlugScrollPreview(down) abort
+    silent! wincmd P
+    if &previewwindow
+      execute "normal! " a:down ? "\<C-e>" : "\<C-y>"
+      wincmd p
+    endif
+  endfunction
+
+  
+
+  " function to setup additional mappings for use with vim-plug
+  function! s:PlugMappings() abort
+    nnoremap <buffer> <silent> J :call <SID>PlugScrollPreview(1)<CR>
+    nnoremap <buffer> <silent> K :call <SID>PlugScrollPreview(0)<CR>
+    nnoremap <buffer> <silent> <C-n> :call search('^  \X*\zs\x')<CR>
+    nnoremap <buffer> <silent> <C-p> :call search('^  \X*\zs\x', 'b')<CR>
+    nmap <buffer> <silent> <C-j> <C-n>o
+    nmap <buffer> <silent> <C-k> <C-p>o
+  endfunction
+
+  augroup plug_extraMappings
+    autocmd!
+    autocmd FileType vim-plug :call s:PlugMappings()
+  augroup END

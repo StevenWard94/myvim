@@ -146,6 +146,19 @@
     " now actually set the backupdir option
     autocmd BufWritePre * :let &backupdir = s:GenerateBackupDirs()
 
+    " disable swap files -- '*/.fname.swp'
+    set noswapfile
+
+    " source my .vimrc after writing it -- applies changes
+    augroup rc_reload
+      autocmd!
+      if has('nvim')
+        autocmd BufWritePost init.vim source $MYVIMRC
+      else
+        autocmd BufWritePost .vimrc source $MYVIMRC
+      endif
+    augroup END
+
     if !exists('g:sw_override_views') || g:sw_override_views == 0
       let g:skipview_files = [
             \ '\[example pattern\]'
@@ -250,6 +263,11 @@
     autocmd FileType haskell :setlocal commentstring=--\ %s
     autocmd FileType haskell,rust :if &spell | setlocal nospell | endif
   augroup END
+
+  " pretty unicode haskell symbols
+  let g:haskell_conceal_wide = 1
+  let g:haskell_conceal_enumerations = 1
+  let hscoptions = "STEMxRtBDw"
 " \end
 
 " Key Mappings & Remappings \begin
@@ -395,6 +413,11 @@
     " map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
   " \end
 
+  " mapping to open file prompt using current buffer's path
+  nmap <leader>e :e <C-r>=expand("%:p:h") . '/'<CR>
+
+  " mapping to show undo-tree
+  nmap <silent> <leader>u :MundoToggle<CR>
 " \end
 
 " Helper Functions \begin
