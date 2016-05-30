@@ -20,16 +20,33 @@
   Plug 'moll/vim-bbye'
   Plug 'nathanaelkane/vim-indent-guides'
   Plug 'vim-scripts/gitignore'
+  Plug 'Shougo/neosnippet'
+  Plug 'Shougo/neosnippet-snippets'
+  Plug 'honza/vim-snippets'
+  " source 'support_functions.vim' to support vim-snippets
+  if filereadable(expand("~/.vim/bundle/vim-snippets/snippets/support_functions.vim"))
+    source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
+  endif
+  Plug 'mattn/webapi-vim'
+  Plug 'mattn/gist-vim'
+  Plug 'luochen1990/rainbow'
+  if executable('ctags')
+    Plug 'majutsushi/tagbar'
+  endif
+  Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-repeat'
+  Plug 'jiangmao/auto-pairs'
 
   " Git
   Plug 'tpope/vim-fugitive'
   Plug 'int3/vim-extradite'
+  Plug 'rhysd/conflict-marker.vim'
 
   " Bars, Panels & Files
   Plug 'scrooloose/nerdtree'
   Plug 'bling/vim-airline'
   Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'majutsushi/tagbar'
+  Plug 'tacahiroy/ctrlp-funky'
 
   " Text Manipulation
   Plug 'vim-scripts/Align'
@@ -50,12 +67,30 @@
   Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
   Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
   Plug 'Twinside/vim-hoogle', { 'for': 'haskell' }
+  Plug 'Twinside/vim-haskellFold', { 'for': 'haskell' }
+  Plug 'Twinside/vim-hoogle', { 'for': 'haskell' }
   Plug 'mpickering/hlint-refactor-vim', { 'for': 'haskell' }
+  Plug 'travitch/hasksyn', { 'for': 'haskell' }
+  Plug 'dag/vim2hs', { 'for': 'haskell' }
+  Plug 'lukerandall/haskellmode-vim', { 'for': 'haskell' }
+  Plug 'adinapoli/cumino', { 'for': 'haskell' }
+  Plug 'bitc/vim-hdevtools', { 'for': 'haskell' }
+
+  " Python -- only load when filetype is 'python'
+  Plug 'klen/python-mode', { 'for': 'python' }
+  Plug 'yssource/python.vim', { 'for': 'python' }
+  Plug 'python_match.vim', { 'for': 'python' }
+  Plug 'pythoncomplete', { 'for': 'python' }
+
+  " Ruby -- only load when filetype is 'ruby'
+  Plug 'tpope/vim-rails', { 'for': 'ruby' }
+  let g:rubycomplete_buffer_loading = 1
 
   " Colorschemes
   Plug 'vim-scripts/wombat256.vim'
   Plug 'tomasr/molokai'
   Plug 'vim-scripts/colorful256.vim'
+  Plug 'altercation/vim-colors-solarized'
 
   " Recommended by Stephen Diehl
   Plug 'scrooloose/syntastic'
@@ -137,7 +172,18 @@
     if !exists('g:rehash256') || g:rehash256 == 0
       let g:rehash256 = 1
     endif
+  " \end2
 
+  " Airline \begin2
+
+    " Use powerline fonts for airline
+    if !exists('g:airline_symbols')
+      let g:airline_symbols = {}
+    endif
+
+    let g:airline_powerline_fonts = 1
+    let g:airline_symbols.space = "\ua0"
+  " \end2
 " \end1
 
 " Helper Functions \begin1

@@ -365,11 +365,7 @@
   " \end
 
   " Enable toggling of search-result highlighting (instead of clearing of results) with <leader>/
-  if exists('g:sw_override_hlsearch') && g:sw_override_hlsearch != 0
-    nmap <silent> <leader>/ :nohlsearch<CR>
-  else
-    nmap <silent> <leader>/ :set invhlsearch<CR>
-  endif
+  nmap <silent> <leader>/ :nohlsearch<CR>
 
   " Mapping to quickly find markers for git-merge conflicts
   map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
