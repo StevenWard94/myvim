@@ -177,3 +177,23 @@ SUBSTITUTION                                                          *QHelp-Sub
 ========================================================================================
 GLOBAL COMMAND                                                              *QHelp-Global*
 
+    g/searchstr/#                       :   display all search results with line numbers
+    g/fred.*joe.*dick/                  :   display all lines with "fred", "joe" and "dick"
+    g/\<fred\>/                         :   display all lines containing EXACTLY "fred"
+    g/^\s*$/d                           :   delete all blank lines
+    g!/^dd/d                            :   delete all lines not containing "dd" (method #1)
+    v/^dd/d                             :   delete all lines not containing "dd" (method #2)
+    g/joe/,/fred/d                      :   delete from "joe" to "fred" (not line-based)
+    g/joe/,/fred/j                      :   join lines from "joe" to "fred"
+    g/abcdefg/.-10,.d                   :   delete string and the 10 preceding lines
+    g/{/ ,/}/- s/\n\+/\r/g              :   delete empty lines, but only between '{...}'
+    v/\S/d                              :   delete empty lines and lines containing only whitespace
+    v/./,/./-j                          :   compress (i.e. 'join') empty lines
+    g/^$/,/./-j                         :   compress empty lines (another method)
+    g/<input\|<form/p                   :   using OR in a global command
+    g/^/put_                            :   double-space a file ( ':put' command )
+    g/^/move0                           :   reverse all lines in a file ( ':move' command )
+    'a,'bg/^/move'b                     :   reverse the section between markers 'a' and 'b'
+    g/^/t.                              :   duplicate every line ( ':t' = ':copy' command )
+    g/fred/t$                           :   transfer (copy) lines containing "fred" to EOF
+    g/stage/t'a                         :   transfer lines containing "stage" to marker 'a'
