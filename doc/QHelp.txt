@@ -1,0 +1,179 @@
+*quick-help.txt*    Cheatsheet for Vim as of version 7.3
+========================================================================================
+CONTENTS                                                                  *QHelp-Contents*
+
+    1. Searching .................... |QHelp-Searches|
+    2. Substitution ................. |QHelp-Substitution|
+    3. Global Command ............... |QHelp-Global|
+        3.1 Global Substitution ..... |QHelp-GlobalSubs| |QHelp-PowerEditing|
+        3.2 Tricks .................. |QHelp-GlobalTricks|
+    4. Editing ...................... |QHelp-Editing|
+        4.1 Operate Until Match ..... |QHelp-OperateUntil| |QHelp-UntilMatch|
+        4.2 Editing Repeats ......... |QHelp-EditingRepeats| |QHelp-RepeatEdits|
+        4.3 Searching Repeats ....... |QHelp-SearchingRepeats| |QHelp-RepeatSearch|
+    5. Absolutely Essential ......... |QHelp-Essential|
+    6. Tabs ......................... |QHelp-Tabs|
+    7. Exploring .................... |QHelp-Exploring| |QHelp-FileExplorer|
+    8. Vim's Memory ................. |QHelp-History| |QHelp-Markers| |QHelp-Memory|
+    9. External Command Output ...... |QHelp-ExternalCommands| |QHelp-CommandOutput|
+   10. Managing Multiple Files ...... |QHelp-FileManagement| |QHelp-MultiFiles|
+   11. Recording .................... |QHelp-Recording|
+       11.1 General ................. |QHelp-RecordingGeneral|
+       11.2 Example with Mapping .... |QHelp-RecordingMapping|
+   12. Visual Mode .................. |QHelp-Visual| |QHelp-VMode|
+       12.1 Basics .................. |QHelp-VisualBasics|
+       12.2 Examples ................ |QHelp-VisualExamples|
+   13. Extras ....................... |QHelp-Extras|
+
+
+========================================================================================
+SEARCHING                                                                 *QHelp-Searches*
+
+    /joe/e                              :   search and set cursor to END of match
+    3/joe/e+1                           :   search for 3rd "joe" and set cursor to END + 1
+    /joe/s-2                            :   search and set cursor to START of match - 2
+    /joe/+3                             :   search and set cursor 3 lines below match
+    /^joe.*fred.*bill/                  :   find "joe" at start of line AND "fred" AND "bill"
+    /^[A-J]/                            :   search for lines starting one of 'A' thru 'J'
+    /begin\_.*end                       :   search over (possibly) multiple lines
+    /fred\_s*joe/                       :   '\_s*' matches any whitespace, including newline
+    /fred\|joe                          :   search for "fred" OR "joe"
+    /.*fred\&.*joe                      :   search for "fred" AND "joe" in ANY ORDER
+    /\<fred\>/                          :   match ONLY "fred" EXACTLY - not "alfred" or "freddy"
+    /\<\d\d\d\d\>                       :   search for a number with EXACTLY 4 DIGITS (method #1)
+    /\D\d\d\d\d\D                       :   search for a number with EXACTLY 4 DIGITS (method #2)
+    /\<\d\{4}\>                         :   search for a number with EXACTLY 4 DIGITS (method #3)
+    /\([^0-9]\|^\)%.*%                  :   search for absence of a digit OR the start of a line
+    /^\n\{3}                            :   find 3 empty lines (i.e. 3 consecutive '\n' chars)
+    /^str.*\nstr                        :   find 2 consecutive lines beginning with str (method #1)
+    /\(^str.*\n\)\{2}                   :   find 2 consecutive lines beginning with str (method #2)
+    /\(fred\).*\(joe\).*\2.*\1          :   using Regexp memory: same as, /fred.*joe.*joe.*fred/
+    /^\([^,]*,\)\{8}                    :   repeat the Regexp RATHER THAN what it finds
+    :vmap // y/<C-r>"<CR>               :   maps // to search for highlighted text in Visual mode
+    y/<C-r>=escape(@", '\\/.*$^~[]')<CR><CR>
+                                        :   same as above, but auto-escapes special characters
+    '\zs' and '\ze'                     :   special Regexp delimiters ( see :help /\zs )
+    /<\zs[^>]*\ze>                      :   search for contents of a "tag" (ignores chevrons)
+    /<\@<=[^>]*>\@=                     :   search for "tag" contents ( see :help /\@= )
+    /<\@<=\_[^>]*>\@=                   :   search for "tags", possibly across multiple lines
+    /\_                                 :   special Regexp escape meaning "include newline(s)"
+    /<!--\_p\{-}-->                     :   search for multiline comments
+    /fred\_s*joe/                       :   '\_s*' means "any whitespace, including newline(s)"
+    /bugs\(\_.\)*bunny                  :   search for "bugs" followd by "bunny" anywhere in file
+    yiw/^\(sub\|function\)\s\+<C-r>"<CR>
+                                        :   search for declaration of subroutine/function under cursor
+    :bufdo /searchstr/                  :   search in multiple files (use :rewind to continue search)
+    :bufdo %s/searchstr/&/gic           :   multi-file search (better but cheating - use 'n' then 'a' to stop)
+    ?http://www.vim.org/                :   search for URL w/o escaping '/' (search backwards)
+    /\c\v([^aeiou]&\a){4}               :   search for 4 consecutive consonants (i.e. 4 "NOT VOWELS")
+    /\%>20l\%<30lgoat                   :   search for "goat" between line 20 and line 30
+    /^.\{-}home.\{-}\zshome/e           :   match only a 2nd occurrence of "home" in a line
+    :%s/home.\{-}\zshome/alone          :   substitute only a line's 2nd occurrence of "home" w/ "alone"
+
+    ^\(.*tongue.*\)\@!.*nose.*$
+    \v^((tongue)@!.)*nose((tongue)@!.)*$    '\v' means "very magic" - less escaping required
+    .*nose.*\&^\%(\%(tongue\)\@!.\)*$
+    v/tongue/s/nose/&/gic
+                                        :   search for "nose" in lines NOT CONTAINING "tongue" (4 ways)
+    'a, 'bs/extrascost//gc              :   trick - restrict search to between markers (answer n)
+
+========================================================================================
+SUBSTITUTION                                                          *QHelp-Substitution*
+
+    %s/fred/joe/igc                     :   general command to substitute throughout file
+    %s//joe/igc                         :   substitute last search term with "joe" in file
+    %s/~/sue/igc                        :   substitute last replacement term ("joe") with "sue"
+    %/\r//g                             :   delete (sub with nothing) DOS returns '^M'
+
+                TEXT FILE JUMBLED ON A SINGLE LINE?
+    %s/\r/\r/g                          :   substitute DOS returns (^M) with real returns
+    %s=  *$==                           :   delete EOL trailing whitespace ( method #1 )
+    %s= \+$==                           :   delete EOL trailing whitespace ( method #2 )
+    %s#\s*\r\?$##                       :   clean trailing whitespace AND DOS returns in 1 command
+    %s#\s*\r*$##                        :   same thing but 1 less character
+
+    %s/^\n\{3}//                        :   delete blocks of 3 empty lines
+    %s/^\n\+/\r/                        :   compress empty lines
+    %s#<[^>]\+>##g                      :   delete HTML tags but leave text (non-greedy)
+    %s#<\_.\{-1,}>##g                   :   delete HTML tags - possibly multi-line (non-greedy)
+    %s#.*\(\d\+hours\).*#\1#            :   delete all except a "memorized" string ('\1')
+
+                PARSING XML & SOAP
+    %s#><\([^/]\)#>\r<\1#g              :   split a jumbled XML file to have only one tag per line
+    %s/</\r&/g                          :   simple split of HTML/XML/SOAP file into one tag per line
+    %s#<[^/]#\r&#gic                    :   simple split of HTML/XML/SOAP file but only for opening tags
+    %s#<[^/]#\r&#gi                     :   parse open XML tag
+    %s#\[\d\+\]#\r&#g                   :   parse numbered array elements
+    ggVGgJ                              :   rejoin XML without unnecessary additional spaces
+    %s=\\n#\d=\r&#g                     :   parse PHP error stack
+
+    %s= [^ ]\+$=&&=                     :   duplicate last column in each line of a file
+    %s= \f\+$=&&=                       :   duplicate filename
+    %s= \S\+$=&&=                       :   also (USUALLY!) duplicates filename
+
+                USING VIM's SEARCH "MEMORY"
+    %s#example#& = &#gic                :   duplicate entire matched string (in this case, "example")
+    %s#.*\(tbl_\w\+\).*#\1#             :   extract a list of all strings ( 'tbl_*' ) from text
+    s/\(.*\):\(.*\)/\2 : \1/            :   reverse fields separated by ':'
+    %s/^\(.*\)\n\1$/\1/                 :   delete duplicate lines
+    %s/^\(.*\)\(\n\1\)\+$/\1/           :   delete multiple duplicate lines
+
+                NON-GREEDY MATCHING -- '\{-}'
+    %s/^.\{-}pdf/new.pdf/               :   delete to first occurence of "pdf" ONLY (non-greedy)
+    %s#^.\{-}\([0-9]\{3,4\}serial\)#\1#gic
+                                        :   delete up to either "123serial" OR "1234serial"
+
+    %s#\<[zy]\?tbl_[a-z_]\+\>#\L&#gc    :   lowercase with optional leading characters ( '\?' )
+    %s/<!--\_.\{-}-->//                 :   delete (possibly) multiline comments
+
+                SUBSTITUTE USING A REGISTER
+    s/fred/<C-r>a/g                     :   substitute "fred" with the contents of register, 'a'
+    s/fred/<C-r>asome_text<C-r>s/g
+    s/fred/\=@a/g                       :   better alternative, as register is not displayed (not *)
+
+    %s/\f\+\.gif\>/\r&\r/g | v/\.gif$/d | %s/gif/jpg/
+                                        :   multiple search commands on a single line
+    %s/a/but/gie|:update|:next          :   then, use '@:' to repeat                        ~
+    %s/goat\|cow/sheep/gc               :   substitute "goat" OR ( '\|' ) "cow" with "sheep"
+    'a,'bs#\[\|\]##g                    :   remove "[]" between markers, 'a' and 'b'
+    %s/\v(.*\n){5}/&\r                  :   insert a blank line every 5 lines
+    %s/__date__/\=strftime("%c")/       :   replace each occurence of "__date__" in a file with the date
+    :inoremap \zd <C-r>=strftime("%d%b%y")<CR>
+                                        :   mapping to quickly insert the date, like: "02Jun16"
+    %s:\(\(\w\+\s\+\)\{2}\)str1:\1str2:
+                                        :   substitute any "str1" in column 3 with "str2"
+    %s:\(\w\+\)\(.*\s\+\)\(\w\+\)$:\3\2\1:
+                                        :   swap the first and last of 4 columns (i.e swap columns 1 and 4)
+    %s#\<from\>\|\<where\>\|\<left join\>\|\<\inner join\>#\r&#g
+                                        :   formats a MySQL query
+
+    :redir @* | silent execute 'g#<\(input\|select\|textarea\|/\=form\)\>#p' | redir END
+    :nmap ,z :redir @*<Bar>sil exec 'g@<\(input\<Bar>select\<Bar>textarea\<Bar>/\=form\)\>@p'<Bar>redir END<CR>
+                                        :   filter form elements into paste register (command and example mapping)
+    %s/^\(.\{30\}\)xx/\1yy/             :   substitute "xx" in column 30 with "yy"
+
+    %s/\d\+/\=(submatch(0)-3)/          :   decrement all digits by 3
+    g/loc\|function/s/\d/\=submatch(0)+6
+    %s#txtdev\zs\d#\=submatch(0)+1#g    :   2 methods to increment numbers on ONLY certain lines by 6
+    %s/\(gg\)\@<=\d\+/\=submatch(0)+6/  :   another method but ONLY numbers, "gg\d\d"
+    let i=10 | 'a,'bg/Abc/s/yy/\=i/ | let i=i+1
+    let i=10 | 'a,'bg/Abc/s/xx\zsyy\ze/\=i/ | let i=i+1
+                                        :   convert "yy" to 10,11,... and "xxyy" to xx11,xx12,... (2 similar methods)
+
+    %s/"\([^.]\+\).*\zsxx/\1/           :   find text, store it in memory, then use '\zs' to simplify substitution
+    :nmap <leader>z :%s#\<<C-r>=expand("<cword>")<CR>\>#
+                                        :   mapping to pull word under cursor into the lefthand-side of a substitute command
+    :vmap <leader>z :<C-u>%s/\<<C-r>*\>/
+                                        :   mapping to pull highlighted text into lefthand-side of a substitute in Visual mode
+    'a,'bs/bucket\(s\)*/bowl\1/gic      :   substitute "bowl" for "bucket" or "buckets" (finds singular AND plural)
+
+    %s,\(all/.*\)\@<=/,_,g
+    s#all/\zs.*#\=substitute(submatch(0), '/', '_', 'g')#
+                                        :   replace all / with _ AFTER "all/" (2 methods)
+    s#all/#&^M#|s#/#_#g|-j!             :   similar, but substitute by splitting a line and then rejoining it afterwards    ~
+    %s/.*/\='cp '.submatch(0).' all/'.substitute(submatch(0),'/','_','g')/
+                                        :   substitution within another substitution
+
+========================================================================================
+GLOBAL COMMAND                                                              *QHelp-Global*
+

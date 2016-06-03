@@ -257,11 +257,18 @@
     autocmd FileType git,gitcommit :setlocal nolist tw=88 fo=ctro1jbq sw=4 ts=4 noexpandtab spell
   augroup END
 
+  " workaround to disable spellcheck in help files
+  augroup helpfiles_nospell
+    autocmd!
+    autocmd BufNewFile,BufReadPost,FileReadPost /usr/share/vim/vim74/doc/*,/home/steven/.vim/doc/*,*/doc/*.txt :set filetype=help nospell
+    autocmd FileType help :set nospell
+  augroup END
+
   " workarounds for vim-commentary and broken highlighting with Haskell
   augroup haskell_fixes
     autocmd!
     autocmd FileType haskell :setlocal commentstring=--\ %s
-    autocmd FileType haskell,rust :if &spell | setlocal nospell | endif
+    autocmd FileType haskell,rust :setlocal nospell
   augroup END
 
   " pretty unicode haskell symbols

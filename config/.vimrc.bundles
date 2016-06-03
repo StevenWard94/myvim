@@ -202,7 +202,7 @@
     PlugUpgrade
     execute "normal \<C-c>"
   endfunction
-  autocmd VimEnter * :call s:UpdateVimPlug()
+  "autocmd VimEnter * :call s:UpdateVimPlug()
 
 
 
