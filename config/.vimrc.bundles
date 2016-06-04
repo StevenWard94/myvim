@@ -15,7 +15,7 @@
   " Support Bundles
   Plug 'jgdavey/tslime.vim'
   Plug 'Shougo/vimproc.vim', { 'do': 'make' }
-  Plug 'ervandew/supertab', { 'on': [] }      " disabled by default
+  Plug 'ervandew/supertab'
   Plug 'benekastah/neomake'
   Plug 'moll/vim-bbye'
   Plug 'nathanaelkane/vim-indent-guides'
@@ -68,7 +68,6 @@
   Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
   Plug 'Twinside/vim-hoogle', { 'for': 'haskell' }
   Plug 'Twinside/vim-haskellFold', { 'for': 'haskell' }
-  Plug 'Twinside/vim-hoogle', { 'for': 'haskell' }
   Plug 'mpickering/hlint-refactor-vim', { 'for': 'haskell' }
   Plug 'travitch/hasksyn', { 'for': 'haskell' }
   Plug 'dag/vim2hs', { 'for': 'haskell' }
@@ -119,27 +118,31 @@
   " \end2
 
   " GHC-Mod \begin2
-    map <silent> tw :GhcModTypeInsert<CR>
-    map <silent> ts :GhcModSplitFunCase<CR>
-    map <silent> tq :GhcModType<CR>
-    map <silent> te :GhcModTypeClear<CR>
+    function! s:GHCmod_hask() abort
+      map <silent> tw :GhcModTypeInsert<CR>
+      map <silent> ts :GhcModSplitFunCase<CR>
+      map <silent> tq :GhcModType<CR>
+      map <silent> te :GhcModTypeClear<CR>
+    endfunction
   " \end2
 
   " SuperTab \begin2
-    let g:SuperTabDefaultCompletionType = '<C-X><C-O>'
+    let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
 
     if has('gui_running')
-      imap <C-Space> <C-R>=SuperTabAlternateCompletion("\<lt>C-X>\<lt>C-O>")<CR>
-    else      " i.e. !has('gui_running')
+      imap <C-Space> <C-r>=SuperTabAlternateCompletion("\<lt>C-x>\<lt>C-o>")<CR>
+    else
       if has('unix')
-        " this was pissing me off so it's omitted until I actually set-up autocompletion properly
-        "inoremap <Nul> <C-R>=SuperTabAlternateCompletion("\<lt>C-X>\<lt>C-O>")<CR>
+        inoremap <Nul> <C-r>=SuperTabAlternateCompletion("\<lt>C-x>\<lt>C-o>")<CR>
       endif
     endif
+  " \end2
 
-    " configure SuperTab to dispatch to neco-ghc's tab completion instead of the usual local variable completion
-    let g:haskellmode_completion_ghc = 1
-    autocmd FileType haskell :setlocal omnifunc=necoghc#omnifunc
+  " Neco-GHC \begin2
+    function! s:NecoGHC_hask() abort
+      let g:haskellmode_completion_ghc = 1
+      setlocal omnifunc=necoghc#omnifunc
+    endfunction
   " \end2
 
   " NERDTree \begin2
@@ -147,19 +150,19 @@
   " \end2
 
   " Tabularize \begin2
-    let g:haskell_tabular = 1
+    function! s:Tabularize_hask() abort
+      let g:haskell_tabular = 1
 
-    vmap a= :Tabularize /=<CR>
-    vmap a; :Tabularize /::<CR>
-    vmap a- :Tabularize /-><CR>
+      vmap a= :Tabularize /=<CR>
+      vmap a; :Tabularize /::<CR>
+      vmap a- :Tabularize /-><CR>
+    endfunction
   " \end2
 
   " Ctrl-p \begin2
     " binds the ctrl-p 'fuzzy search' panel to <leader>t (in my case ',t')
     map <silent> <leader>t :CtrlP()<CR>
     noremap <leader>b<Space> :CtrlPBuffer<CR>
-    let g:ctrlp_max_files = 0
-    let g:ctrlp_show_hidden = 1
     let g:ctrlp_custom_ignore = { 'dir': '\v[\/](.git|.cabal-sandbox|.stack-work)$' }
   " \end2
 
@@ -184,6 +187,20 @@
     let g:airline_powerline_fonts = 1
     let g:airline_symbols.space = "\ua0"
   " \end2
+
+  " Haskell-Only \begin2
+    " This autocmd group configures certain settings for plugins which,
+    " are only loaded when filetype=haskell and thus caused problems when attempting to
+    " set variables or call functions that are non-existant for other file types
+    " The functions called by the autocmds are defined above in the section for the
+    " corresponding plugin
+    augroup justhask_plugins
+      autocmd!
+      autocmd FileType haskell :call s:GHCmod_hask()
+      autocmd FileType haskell :call s:NecoGHC_hask()
+      autocmd FileType haskell :call s:Tabularize_hask()
+    augroup END
+    " \end2
 " \end1
 
 " Helper Functions \begin1
