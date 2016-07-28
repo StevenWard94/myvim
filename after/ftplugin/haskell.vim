@@ -8,12 +8,10 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-let s:undo_ftplugin = b:undo_ftplugin . '| '
 
-setlocal formatoptions-=to formatoptions+=crql1jb
+setlocal formatoptions=crql1jb
 setlocal expandtab shiftround
 setlocal shiftwidth=4 softtabstop=4 tabstop=8
-let s:undo_ftplugin += "setl fo< et< sr< sw< sts< ts< | "
 
 let s:width = &l:textwidth
 
@@ -45,5 +43,4 @@ endfunction
 nmap <silent> --h "=HaskellModuleHeader()<CR>:0put =<CR>
 
 let &cpo = s:cpo_save
-let b:undo_ftplugin = s:undo_ftplugin
-unlet s:cpo_save s:undo_ftplugin
+unlet! s:cpo_save
