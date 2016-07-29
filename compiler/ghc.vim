@@ -7,6 +7,9 @@
 " part of haskell plugins: http://projects.haskell.org/haskellmode-vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+"until finished:
+finish
+
 "
 " ------------------------------ paths & quickfix settings first
 "
@@ -319,4 +322,147 @@ function! GHC_ProcessBang(module, output)
     let ml = matchlist( rest, linePat )
   endwhile
   return 1
+endfunction
+
+function! GHC_Process(imports, output)
+  let b       = a:output
+  let imports = a:imports
+  let linePat = '^\(.\{-}\)\n\(.*\)'
+  let contPat = '\s\+\(.\{-}\)\n\(.*\)'
+  let typePat = '^\(\s*\)\(\S*\)\s*::\(.*\)'
+  let modPat  = '^-- \(\S*\)'
+  " add '-- defined locally' and '-- imported via..'
+  if b !~ modPat
+    redraw
+    echo s:scriptname.": GHCi reports errors (try :make?)"
+    return 0
+  endif
+  let b:ghc_types = {}
+  let ml = matchlist( b, linePat )
+  while ml != []
+    let [_,l,rest;x] = ml
+    let mlDecl = matchlist( l, typePat )
+    if mlDecl != []
+      let [_,indent,id,type;x] = mlDecl
+      let ml2 = matchlist( rest, '^'.indent.contPat )
+      while ml2 != []
+        let [_,c,rest;x] = ml2
+        let type .= c
+        let ml2 = matchlist( rest, '^'.indent.contPat )
+      endwhile
+      let id   = substitute( id, '^(\(.*\))$', '\1', '' )
+      let type = substitute( type, '\s\+', " ", "g" )
+      " using :browse *<current>, we get unqualified AND qualified id's
+      if current_module " || has_key( imports[0], module )
+        if has_key(b:ghc_types, id) && matchstr(b:ghc_types[id], escape(type, '[].')) != type
+          let b:ghc_types[id] .= ' -- '.type
+        else
+          let b:ghc_types[id] = type
+        endif
+      endif
+      if 0 " has_key(imports[1], module)
+        let qualid = module.'.'.id
+        let b:ghc_types[qualid] = type
+      endif
+    else
+      let mlMod = matchlist( l, modPat )
+      if mlMod != []
+        let [_,module;x] = mlMod
+        let current_module = module[0] == '*'
+        let module = current_module ? module[1:] : module
+      endif
+    endif
+    let ml = matchlist( rest, linePat )
+  endwhile
+  return 1
+endfunction
+
+let s:ghc_templates = ["module _ () where", "class _ where", "class _ => _ where",
+                      \"instance _ where", "instance _ => _ where", "type family _",
+                      \"type instance _", "data _ = ", "newtype _ = ", "type _ = "]
+
+
+" use GHCi :browse index for omnicompletion (CTRL-X CTRL-O) in Insert mode
+function! GHC_CompleteImports(findstart, base)
+  if a:findstart
+    let namsym = haskellmode#GetNameSymbol(getline('.'), col('.'), -1) " Insert-mode: we are '1 behind' the text
+    if namsym == []
+      redraw
+      echo 'no name/symbol under cursor!'
+      return -1
+    endif
+    let [start,symb,qual,unqual] = namsym
+    return (start - 1)
+  else    " find matching keys w/ 'a:base'
+    let res = []
+    let l   = len(a:base) - 1
+    call GHC_HaveTypes()
+    for key in keys(b:ghc_types)
+      if key[0 : l] == a:base
+        let res += [{"word":key, "menu":":: ".b:ghc_types[key], "dup":1}]
+      endif
+    endfor
+    return res
+  endif
+endfunction
+set omnifunc=GHC_CompleteImports
+setlocal completeopt-=longest
+
+
+map <LocalLeader>ct :call GHC_CreateTagFile()<CR>
+function! GHC_CreateTagFile()
+  redraw
+  echo "creating tags file..."
+  let output = system( g:ghc . ' ' . b:ghc_staticoptions . ' -e ":ctags" ' . expand("%") )
+  echo output
+endfunction
+
+command! -nargs=1 GHCi redraw | echo system( g:ghc . ' ' . b:ghc_staticoptions . ' ' . expand("%") . ' -e "'.escape(<f-args>, '"').'"')
+
+" use 'not in scope' errors from :make to explicitly list imported id's
+" cursor needs to be on import line, in a correctly loadable module
+map <LocalLeader>ie :call GHC_MkImportsExplicit()<CR>
+function! GHC_MkImportsExplicit()
+  let save_cursor = getpos(".")
+  let line        = getline('.')
+  let lineno      = line('.')
+  let ml          = matchlist( line, '^import\(\s*qualified\)\?\s*\([^( ]\+\)' )
+  if ml != []
+    let [_,q,mod;x] = ml
+    silent make
+    if getqflist() == []
+      if line =~ "import[^(]*Prelude"
+        call setline( lineno, substitute(line, "(.*", "", "").'()' )
+      else
+        call setline( lineno, '-- '.line )
+      endif
+      silent write
+      silent make
+      let qflist = getqflist()
+      call setline(lineno, line)
+      silent write
+      let ids = {}
+      for d in qflist
+        let ml = matchlist( d.text, 'Not in scope: \([^`]*\)`\([^'']*\)''' )
+        if ml != []
+          let [_,what,qid;x] = ml
+          let id  = ( qid =~ "^[A-Z]" ? substitute( qid, '.*\.\([^.]*\)$', '\1', '' ) : qid )
+          let pid = ( id =~ "[a-zA-Z0-9_']\\+" ? id : '('.id.')' )
+          if what =~ "data"
+            call GHC_HaveTypes()
+            if has_key(b:ghc_types, id)
+              let pid = substitute( b:ghc_types[id], '^.*->\s*\(\S*\).*$', '\1', '' ).'('.pid.')'
+            else
+              let pid = '???('.pid.')'
+            endif
+          endif
+          let ids[pid] = 1
+        endif
+      endfor
+      call setline( lineno, 'import'.q.' '.mod.'('.join(keys(ids),',').')' )
+    else
+      copen
+    endif
+  endif
+  call setpos('.', save_cursor)
 endfunction
