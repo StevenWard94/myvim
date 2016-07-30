@@ -7,8 +7,6 @@
 " part of haskell plugins: http://projects.haskell.org/haskellmode-vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"until finished:
-finish
 
 "
 " ------------------------------ paths & quickfix settings first
