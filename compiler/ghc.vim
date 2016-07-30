@@ -466,3 +466,95 @@ function! GHC_MkImportsExplicit()
   endif
   call setpos('.', save_cursor)
 endfunction
+
+
+" there's no point in asking GHC about its supported languages & options
+" every editing session - instead, cache this info in ~/.vim/haskellmode.config
+" TODO: should we store more info? (see haskell_doc.vim)
+"       move this function to autoload?
+"       should we keep a history of all GHC versions encountered?
+function! GHC_SaveConfig()
+  let vimdir = expand("~").'/'.'.vim'
+  let config = vimdir.'/haskellmode.config'
+  if !isdirectory(vimdir)
+    call mkdir(vimdir)
+  endif
+  let entries = ['--' . g:ghc_version]
+  for l in s:ghc_supported_languages
+    let entries += [l]
+  endfor
+  let entries += ['--']
+  for l in s:opts
+    let entries += [l]
+  endfor
+  call writefile(entries, config)
+endfunction
+
+" reuse cached GHC configuration info if using the same version of GHC
+function! GHC_LoadConfig()
+  let vimdir = expand("~".'/'.'.vim')
+  let config = vimdir.'/haskellmode.config'
+  if filereadable(config)
+    let lines = readfile(config)
+    if lines[0] == '-- '.g:ghc_version
+      let i = 1
+      let s:ghc_supported_languages = []
+      while i < len(lines) && lines[i] != '--'
+        let s:ghc_supported_languages += [lines[i]]
+        let i += 1
+      endwhile
+      let i += 1
+      let s:opts = []
+      while i < len(lines)
+        let s:opts += [lines[i]]
+        let i += 1
+      endwhile
+      return 1
+    else
+      return 0
+    endif
+  else
+    return 0
+  endif
+endfunction
+
+let s:GHC_CachedConfig = haskellmode#GHC_VersionGE([6,8]) && GHC_LoadConfig()
+
+if haskellmode#GHC_VersionGE([6,8,2])
+  if !s:GHC_CachedConfig
+    let s:opts = filter(split(substitute( system(g:ghc . ' -v0 --interactive', ':set'), '  ', '', 'g' ), '\n'), 'v:val =~ "-f"')
+  endif
+else
+  let s:opts = ["-fglasgow-exts","-fallow-undecidable-instances","-fallow-overlapping-instances", "-fno-monomorphism-restriction","-fno-mono-pat-binds","-fno-cse","-fbang-patterns","-funbox-strict-fields"]
+endif
+let s:opts = sort(s:opts)
+
+amenu ]OPTIONS_GHC.- :echo '-'<CR>
+aunmenu ]OPTIONS_GHC
+for o in s:opts
+  execute 'amenu ]OPTIONS_GHC.'.o.' :call append(0,"{-# OPTIONS_GHC '.o.' #-}")<CR>'
+endfor
+if has('gui_running')
+  map <LocalLeader>opt :popup ]OPTIONS_GHC<CR>
+else
+  map <LocalLeader>opt :emenu ]OPTIONS_GHC.
+endif
+
+amenu ]LANGUAGES_GHC.- :echo '-'<CR>
+aunmenu ]LANGUAGES_GHC
+if haskellmode#GHC_VersionGE([6,8])
+  if !s:GHC_CachedConfig
+    let s:ghc_supported_languages = sort(split(system(g:ghc . ' --supported-languages'), '\n'))
+  endif
+  for l in s:ghc_supported_languages
+    execute 'amenu ]LANGUAGES_GHC.'.l.' :call append(0,"{-# LANGUAGE '.l.' #-}")<CR>'
+  endfor
+  if has('gui_running')
+    map <LocalLeader>lang :popup ]LANGUAGES_GHC<CR>
+  else
+    map <LocalLeader>lang :emenu ]LANGUAGES_GHC.
+  endif
+
+  if !s:GHC_CachedConfig
+    call GHC_SaveConfig()
+  endif
