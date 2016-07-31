@@ -82,13 +82,12 @@ if s:extraConceal
   syntax match hsNiceOperator ">-" conceal cchar=↣
   syntax match hsNiceOperator "-<<" conceal cchar=⤛
   syntax match hsNiceOperator ">>-" conceal cchar=⤜
-  " the star does not seem so good...so it's commented out for now...
-  "syntax match hsNiceOperator "*" conceal cchar=★
+  syntax match hsNiceOperator "*" conceal cchar=×
   syntax match hsNiceOperator "`div`" conceal cchar=÷
 
   " Only replace the dot - avoid taking spaces around the dot
   syntax match hsNiceOperator /\s\.\s/ms=s+1,me=e-1 conceal cchar=∘
-  syntax match hsNiceOperator "\.\." conceal cchar=‥
+  syntax match hsNiceOperator "\.\." conceal cchar=⋯
 
   syntax match hsQQEnd "|\]" contained conceal cchar=〛
   "syntax match hsQQEnd "|\]" contained conceal=〚

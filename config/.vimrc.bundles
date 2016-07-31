@@ -71,7 +71,7 @@
   Plug 'mpickering/hlint-refactor-vim', { 'for': 'haskell' }
   Plug 'travitch/hasksyn', { 'for': 'haskell' }
   Plug 'dag/vim2hs', { 'for': 'haskell' }
-  Plug 'lukerandall/haskellmode-vim', { 'for': 'haskell' }
+  "Plug 'lukerandall/haskellmode-vim', { 'for': 'haskell' }
   Plug 'adinapoli/cumino', { 'for': 'haskell' }
   Plug 'bitc/vim-hdevtools', { 'for': 'haskell' }
 
@@ -102,7 +102,7 @@
   call plug#end()
 " \end1
 
-" Plugin-Specifig Configurations \begin1
+" Plugin-Specific Configurations \begin1
 
   " Syntastic \begin2
     map <Leader>s :SyntasticToggleMode<CR>

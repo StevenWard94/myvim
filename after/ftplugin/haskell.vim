@@ -10,37 +10,20 @@ set cpo&vim
 
 
 setlocal formatoptions=crql1jb
-setlocal expandtab shiftround
-setlocal shiftwidth=4 softtabstop=4 tabstop=8
+setlocal expandtab autoindent shiftround
+setlocal shiftwidth=4 softtabstop=2 tabstop&
 
-let s:width = &l:textwidth
-
-function! HaskellModuleSection(...) abort
-  let name = a:0 > 0 ? a:1 : inputdialog("Section name: ")
-
-  return  repeat('-', s:width) . "\n"
-        \ . "-- " . name . "\n"
-        \ . "\n"
+function! HaskellModuleHeader() abort
+  let repo_name = split(system("git root"), '/')[-1]
+  let curr_date = strftime("%Y %b %d")
+  return "-- |\n"
+     \ . "-- Module:        module.name\n"
+     \ . "-- Author:        Steven Ward <stevenward94@gmail.com>\n"
+     \ . "-- URL:           https://github.com/StevenWard94/".repo_name . "\n"
+     \ . "-- Last Change:   ".curr_date . "\n"
+     \ . "--\n"
 endfunction
-nmap <silent> --s "=HaskellModuleSection()<CR>gp
-
-
-function! HaskellModuleHeader(...) abort
-  let name = a:0 > 0 ? a:1 : inputdialog("Module: ")
-  let note = a:0 > 1 ? a:2 : inputdialog("Note: ")
-  let desc = a:0 > 2 ? a:3 : inputdialog("Description: ")
-
-  return  repeat('-', s:width) . "\n"
-        \ . "-- | \n"
-        \ . "-- Module      : " . name . "\n"
-        \ . "-- Note        : " . note . "\n"
-        \ . "-- \n"
-        \ . "-- " . desc . "\n"
-        \ . "-- \n"
-        \ . repeat('-', s:width) . "\n"
-        \ . "\n"
-endfunction
-nmap <silent> --h "=HaskellModuleHeader()<CR>:0put =<CR>
+nmap <Leader>-- "=HaskellModuleHeader()<CR>:0put =<CR>
 
 let &cpo = s:cpo_save
 unlet! s:cpo_save
