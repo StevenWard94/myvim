@@ -73,6 +73,10 @@
     autocmd BufEnter * :if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
   endif
 
+  " use GHC functionality for haskell files
+  autocmd BufEnter *.hs :compiler ghc
+  let g:haddock_browser = "/usr/bin/chromium-browser"
+
   set shortmess+=filmnrxoOtT                " abbreviate messages from system (avoids 'hit enter' messages)
   set viewoptions=folds,options,cursor,unix,slash
   set virtualedit=onemore
