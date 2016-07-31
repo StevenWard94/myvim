@@ -19,7 +19,7 @@ function! HaskellModuleHeader() abort
   return "-- |\n"
      \ . "-- Module:        module.name\n"
      \ . "-- Author:        Steven Ward <stevenward94@gmail.com>\n"
-     \ . "-- URL:           https://github.com/StevenWard94/".repo_name . "\n"
+     \ . "-- URL:           https://github.com/StevenWard94/".repo_name
      \ . "-- Last Change:   ".curr_date . "\n"
      \ . "--\n"
 endfunction
