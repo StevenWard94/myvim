@@ -2,16 +2,19 @@
 " Language:       haskell
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/StevenWard94/myvim
-" Last Change:    2016 June 03
+" Last Change:    2016 June 06
 " ======================================================================================
 
 let s:cpo_save = &cpo
 set cpo&vim
 
 
-setlocal formatoptions=crql1jb
+setlocal formatoptions=crql1jb formatoptions-=o formatoptions-=t
 setlocal expandtab autoindent shiftround
 setlocal shiftwidth=4 softtabstop=2 tabstop&
+setlocal foldmethod=marker foldmarker=\\begin,\\end
+
+command! -nargs=+ PointFree :echo system('pointfree "'.<q-args>.'"')
 
 function! HaskellModuleHeader() abort
   let repo_name = split(system("git root"), '/')[-1]

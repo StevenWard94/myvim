@@ -24,7 +24,6 @@
   Plug 'Shougo/neosnippet'
   Plug 'Shougo/neosnippet-snippets'
   Plug 'honza/vim-snippets'
-  Plug 'Yggdroot/indentLine'
   " source 'support_functions.vim' to support vim-snippets
   if filereadable(expand("~/.vim/bundle/vim-snippets/snippets/support_functions.vim"))
     source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
@@ -193,11 +192,6 @@
     let delimitMate_expand_cr = 1
   " \end2
 
-  " indentLine \begin2
-    let g:indentLine_color_term = 239
-    let g:indentLine_color_gui = '#09AA08'
-    let g:indentLine_char = '|'
-  " \end2
 
   " Haskell-Only \begin2
     " This autocmd group configures certain settings for plugins which,

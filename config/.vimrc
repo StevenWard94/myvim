@@ -245,6 +245,17 @@
   " Function & autocommands to strip whitespace \begin
     if !exists('g:sw_override_stripwsp') || g:sw_override_stripwsp == 0
       autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xmlyml,perl,sql :autocmd BufWritePre <buffer> :call StripTrailingWhitespace()
+      function! StripTrailingWhitespace()
+        " Preparation: save last search and cursor position
+        let _s=@/
+        let l = line(".")
+        let c = col(".")
+        " do the business:
+        %s/\s\+$//e
+        " clean up: restore previous search history and cursor position
+        let @/= _s
+        call cursor(l, c)
+      endfunction
     endif
   " \end
 
