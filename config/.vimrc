@@ -173,9 +173,9 @@
 
 " User Interface Settings \begin
 
-  if filereadable(expand("~/.vim/colors/setup.vim"))
-    source ~/.vim/colors/setup.vim
-  elseif filereadable(expand("~/.vim/colors/molokai.vim"))
+  if &filetype == 'haskell' || match( expand("%"), "\.hs$" ) != -1
+    colorscheme colorful256
+  else
     colorscheme molokai
   endif
 
@@ -290,6 +290,10 @@
   let g:haskell_conceal_wide = 1
   let g:haskell_conceal_enumerations = 1
   let hscoptions = "STEMxRtBDw"
+
+  " LATIN SUBSCRIPT SMALL LETTER N
+  " UTF-16(hex): 0x2099      UTF-16(dec): 8345
+  digraphs ns 8345    " add ₙ to digraphs (<C-K>ns)
 " \end
 
 " Key Mappings & Remappings \begin

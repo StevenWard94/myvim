@@ -40,7 +40,7 @@ syntax match hsNiceOperator "\<sqrt\>" conceal cchar=√
 syntax match hsNiceOperator "\<pi\>" conceal cchar=π
 syntax match hsNiceOperator "==" conceal cchar=≡
 syntax match hsNiceOperator "\/=" conceal cchar=≠
-syntax match hsNiceOperator ">>" conceal cchar=»
+"syntax match hsNiceOperator ">>" conceal cchar=»
 
 let s:extraConceal = 1
 " Some windows fonts don't support some of the characters,
@@ -82,7 +82,7 @@ if s:extraConceal
   syntax match hsNiceOperator ">-" conceal cchar=↣
   syntax match hsNiceOperator "-<<" conceal cchar=⤛
   syntax match hsNiceOperator ">>-" conceal cchar=⤜
-  syntax match hsNiceOperator "*" conceal cchar=×
+  syntax match hsNiceOperator "*" conceal cchar=*
   syntax match hsNiceOperator "`div`" conceal cchar=÷
 
   " Only replace the dot - avoid taking spaces around the dot

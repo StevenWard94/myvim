@@ -4,6 +4,7 @@
 " Language:       N/A
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/stevenward94/myvim
+" Last Change:    2016 Aug 09
 " ------------------------------------------------------------------------------
 
 " Setup \begin1
@@ -62,6 +63,7 @@
   Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
 
   " Haskell -- these only load when filetype is 'haskell'
+  Plug 'itchyny/haskell-indent-vim', { 'for': 'haskell' }
   Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
   Plug 'enomsg/vim-haskellConcealPlus', { 'for': 'haskell' }
   Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
@@ -70,7 +72,6 @@
   Plug 'Twinside/vim-haskellFold', { 'for': 'haskell' }
   Plug 'mpickering/hlint-refactor-vim', { 'for': 'haskell' }
   Plug 'travitch/hasksyn', { 'for': 'haskell' }
-  Plug 'dag/vim2hs', { 'for': 'haskell' }
   Plug 'lukerandall/haskellmode-vim', { 'for': 'haskell' }
   Plug 'adinapoli/cumino', { 'for': 'haskell' }
   Plug 'bitc/vim-hdevtools', { 'for': 'haskell' }
