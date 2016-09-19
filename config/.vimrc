@@ -69,9 +69,9 @@
   endif
 
   " automatically change working directory that of the file currently open in the buffer
-  if !exists('g:sw_override_autochdir') || g:sw_override_autochdir == 0
-    autocmd BufEnter * :if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
-  endif
+  "if !exists('g:sw_override_autochdir') || g:sw_override_autochdir == 0
+   "autocmd BufEnter * :if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+  "endif
 
   " use GHC functionality for haskell files
   autocmd BufEnter *.hs :compiler ghc
@@ -173,11 +173,9 @@
 
 " User Interface Settings \begin
 
-  if &filetype == 'haskell' || match( expand("%"), "\.hs$" ) != -1
-    colorscheme colorful256
-  else
-    colorscheme molokai
-  endif
+  colorscheme peaksea
+  set background=dark
+  syntax enable
 
   set tabpagemax=15
   set showmode

@@ -2,12 +2,13 @@
 " Language:       haskell
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/StevenWard94/myvim
-" Last Change:    2016 Aug 08
+" Last Change:    2016 Sep 15
 " ======================================================================================
 
 set textwidth=80 formatoptions=cr1jbql nowrap nopaste
-set shiftwidth=4 softtabstop=2 tabstop& expandtab
+set shiftwidth=2 softtabstop=2 tabstop& expandtab
 set autoindent smartindent
+set backspace-=indent
 
 command! -nargs=1 PointFree :echo system('pointfree '.<q-args>)
 
@@ -22,4 +23,3 @@ function! HaskellModuleHeader() abort
      \ . "--\n"
 endfunction
 nmap <Leader>-- "=HaskellModuleHeader()<CR>:0put =<CR>
-
