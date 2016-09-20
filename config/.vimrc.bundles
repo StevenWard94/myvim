@@ -4,7 +4,7 @@
 " Language:       N/A
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/stevenward94/myvim
-" Last Change:    2016 Aug 09
+" Last Change:    2016 Sep 20
 " ------------------------------------------------------------------------------
 
 " Setup \begin1
@@ -86,11 +86,16 @@
   Plug 'tpope/vim-rails', { 'for': 'ruby' }
   let g:rubycomplete_buffer_loading = 1
 
+  " Clojure -- only load when filetype is 'clojure'
+  Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
+  Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
+
   " Colorschemes
   Plug 'vim-scripts/wombat256.vim'
   Plug 'tomasr/molokai'
   Plug 'vim-scripts/colorful256.vim'
   Plug 'altercation/vim-colors-solarized'
+  Plug 'kien/rainbow_parentheses.vim'
 
   " Recommended by Stephen Diehl
   Plug 'scrooloose/syntastic'
@@ -192,7 +197,6 @@
   " delimitMate \begin2
     let delimitMate_expand_cr = 1
   " \end2
-
 
   " Haskell-Only \begin2
     " This autocmd group configures certain settings for plugins which,
