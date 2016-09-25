@@ -57,11 +57,6 @@
   Plug 'michaeljsmith/vim-indent-object'
   Plug 'easymotion/vim-easymotion'
 
-  " Plugin to enable jumping out of vim into tmux
-  " NOTE: disabled by default b/c I currently don't have tmux
-  "     : use 'plug#load('vim-tmux-navigator') to load manually
-  Plug 'christoomey/vim-tmux-navigator', { 'on': [] }
-
   " Haskell -- these only load when filetype is 'haskell'
   Plug 'itchyny/haskell-indent-vim', { 'for': 'haskell' }
   Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
