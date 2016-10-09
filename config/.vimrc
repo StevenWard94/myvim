@@ -214,8 +214,8 @@
   set ignorecase
   set smartcase
   set whichwrap=b,s,h,l,<,>,[,]
-  set scrolljump=-10                              " when cursor leaves screen (not <C-E>, etc.) auto-scroll 10% winheight
-  set scrolloff=3
+  set scrolljump=-25                              " when cursor leaves screen (not <C-E>, etc.) auto-scroll 25% winheight
+  set scrolloff=10                                " maintain at least 10 lines above and below cursor
   set foldenable
   set list
   set listchars=tab:»›,trail:∅,extends:Ϟ,nbsp:∙   " mark potentially problematic whitespace
@@ -328,9 +328,9 @@
     nmap <C-H> <C-W>h<C-W>\<Bar>
   endif
 
-  " Use 'virtual' line navigation for 'j' and 'k'
-  noremap j gj
-  noremap k gk
+  " center cursor vertically within window when moving with 'j' or 'k'
+  noremap j jzz
+  noremap k kzz
 
   " Mappings for use with 'RelativeWrap(key,...)' in "Helper Functions"
   "   these map start/end of line motion commands to behave relative to the current row instead of moving to the

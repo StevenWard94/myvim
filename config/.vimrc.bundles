@@ -4,7 +4,7 @@
 " Language:       N/A
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/stevenward94/myvim
-" Last Change:    2016 Sep 20
+" Last Change:    2016 Oct 08
 " ------------------------------------------------------------------------------
 
 " Setup \begin1
@@ -26,7 +26,7 @@
   Plug 'Shougo/neosnippet-snippets'
   Plug 'honza/vim-snippets'
   " source 'support_functions.vim' to support vim-snippets
-  if filereadable(expand("~/.vim/bundle/vim-snippets/snippets/support_functions.vim"))
+  if filereadable(expand('~/.vim/bundle/vim-snippets/snippets/support_functions.vim'))
     source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
   endif
   Plug 'mattn/webapi-vim'
@@ -87,6 +87,7 @@
 
   " Colorschemes
   Plug 'vim-scripts/wombat256.vim'
+  Plug 'octol/vim-cpp-enhanced-highlight'
   Plug 'tomasr/molokai'
   Plug 'vim-scripts/colorful256.vim'
   Plug 'altercation/vim-colors-solarized'
@@ -116,6 +117,19 @@
     let g:syntastic_auto_loc_list = 0
     let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
+
+    let g:syntastic_vim_checkers = ['vint']
+
+    let g:syntastic_cpp_checkers = ['gcc']
+    let g:syntastic_cpp_compiler = 'g++'
+    let g:syntastic_cpp_compiler_options = ' -std=c++11'
+
+    autocmd BufNewFile,BufRead *.java :let parentDir = expand("%:p:h:h")
+    let g:syntastic_java_checkers = ['javac']
+    let g:syntastic_java_javac_classpath = parentDir.'/lib/*.jar\n'.parentDir.'/src\n'.parentDir.'/bin'
+    let g:syntastic_java_javac_config_file_enabled = 1
+    let g:syntastic_java_javac_config_file = parentDir.'/.syntastic_javac_config'
+
   " \end2
 
   " GHC-Mod \begin2
@@ -186,7 +200,7 @@
     endif
 
     let g:airline_powerline_fonts = 1
-    let g:airline_symbols.space = "\ua0"
+    let g:airline_symbols.space = '\ua0'
   " \end2
 
   " delimitMate \begin2
@@ -215,12 +229,12 @@
     let l:plugins = g:plugs
     if !empty(filter(copy(l:plugins), '!isdirectory(v:val.dir)'))
       silent! PlugInstall
-      execute "normal q"
+      execute 'normal q'
     endif
     unlet l:plugins
 
     silent PlugUpdate
-    execute "normal q"
+    execute 'normal q'
     PlugUpgrade
     execute "normal \<C-c>"
   endfunction
@@ -281,7 +295,7 @@
   function! s:PlugScrollPreview(down) abort
     silent! wincmd P
     if &previewwindow
-      execute "normal! " a:down ? "\<C-e>" : "\<C-y>"
+      execute 'normal! ' a:down ? "\<C-e>" : "\<C-y>"
       wincmd p
     endif
   endfunction
