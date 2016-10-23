@@ -4,104 +4,115 @@
 " Language:       N/A
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/stevenward94/myvim
-" Last Change:    2016 Oct 08
+" Last Change:    2016 Oct 15
 " ------------------------------------------------------------------------------
 
 " Setup \begin1
   set nocompatible
+  filetype off
 
-  " Load plugins using vim-plug <https://github.com/junegunn/vim-plug>
-  call plug#begin('~/.vim/bundle')
+  " Load plugins using Vundle <https://github.com/VundleVim/Vundle.vim>
+  set runtimepath+=~/.vim/bundle/Vundle.vim
+  call vundle#begin()
+
+  Plugin 'VundleVim/Vundle.vim'
 
   " Support Bundles
-  Plug 'Raimondi/delimitMate'
-  Plug 'jgdavey/tslime.vim'
-  Plug 'Shougo/vimproc.vim', { 'do': 'make' }
-  Plug 'ervandew/supertab'
-  Plug 'benekastah/neomake'
-  Plug 'moll/vim-bbye'
-  Plug 'nathanaelkane/vim-indent-guides'
-  Plug 'vim-scripts/gitignore'
-  Plug 'Shougo/neosnippet'
-  Plug 'Shougo/neosnippet-snippets'
-  Plug 'honza/vim-snippets'
+  Plugin 'Raimondi/delimitMate'
+  Plugin 'jgdavey/tslime.vim'
+  Plugin 'Shougo/vimproc.vim'
+  Plugin 'ervandew/supertab'
+  Plugin 'benekastah/neomake'
+  Plugin 'moll/vim-bbye'
+  Plugin 'nathanaelkane/vim-indent-guides'
+  Plugin 'vim-scripts/gitignore'
+  Plugin 'Shougo/neosnippet'
+  Plugin 'Shougo/neosnippet-snippets'
+  Plugin 'honza/vim-snippets'
   " source 'support_functions.vim' to support vim-snippets
   if filereadable(expand('~/.vim/bundle/vim-snippets/snippets/support_functions.vim'))
     source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
   endif
-  Plug 'mattn/webapi-vim'
-  Plug 'mattn/gist-vim'
-  Plug 'luochen1990/rainbow'
+  Plugin 'mattn/webapi-vim'
+  Plugin 'mattn/gist-vim'
+  Plugin 'luochen1990/rainbow'
   if executable('ctags')
-    Plug 'majutsushi/tagbar'
+    Plugin 'majutsushi/tagbar'
   endif
-  Plug 'tpope/vim-surround'
-  Plug 'tpope/vim-repeat'
+  Plugin 'tpope/vim-surround'
+  Plugin 'tpope/vim-repeat'
 
   " Git
-  Plug 'tpope/vim-fugitive'
-  Plug 'int3/vim-extradite'
-  Plug 'rhysd/conflict-marker.vim'
+  Plugin 'tpope/vim-fugitive'
+  Plugin 'int3/vim-extradite'
+  Plugin 'rhysd/conflict-marker.vim'
 
   " Bars, Panels & Files
-  Plug 'scrooloose/nerdtree'
-  Plug 'bling/vim-airline'
-  Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'tacahiroy/ctrlp-funky'
+  Plugin 'scrooloose/nerdtree'
+  Plugin 'ctrlpvim/ctrlp.vim'
+  Plugin 'tacahiroy/ctrlp-funky'
+  Plugin 'vim-airline/vim-airline'
 
   " Text Manipulation
-  Plug 'vim-scripts/Align'
-  Plug 'simnalamburt/vim-mundo'
-  Plug 'tpope/vim-commentary'
-  Plug 'godlygeek/tabular'
-  Plug 'michaeljsmith/vim-indent-object'
-  Plug 'easymotion/vim-easymotion'
+  Plugin 'vim-scripts/Align'
+  Plugin 'simnalamburt/vim-mundo'
+  Plugin 'tpope/vim-commentary'
+  Plugin 'godlygeek/tabular'
+  Plugin 'michaeljsmith/vim-indent-object'
+  Plugin 'easymotion/vim-easymotion'
 
-  " Haskell -- these only load when filetype is 'haskell'
-  Plug 'itchyny/haskell-indent-vim', { 'for': 'haskell' }
-  Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
-  Plug 'enomsg/vim-haskellConcealPlus', { 'for': 'haskell' }
-  Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
-  Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
-  Plug 'Twinside/vim-hoogle', { 'for': 'haskell' }
-  Plug 'Twinside/vim-haskellFold', { 'for': 'haskell' }
-  Plug 'mpickering/hlint-refactor-vim', { 'for': 'haskell' }
-  Plug 'travitch/hasksyn', { 'for': 'haskell' }
-  Plug 'lukerandall/haskellmode-vim', { 'for': 'haskell' }
-  Plug 'adinapoli/cumino', { 'for': 'haskell' }
-  Plug 'bitc/vim-hdevtools', { 'for': 'haskell' }
+  if (&filetype == 'haskell')
+    Plugin 'itchyny/haskell-indent-vim'
+    Plugin 'neovimhaskell/haskell-vim'
+    Plugin 'enomsg/vim-haskellConcealPlus'
+    Plugin 'eagletmt/ghcmod-vim'
+    Plugin 'eagletmt/neco-ghc'
+    Plugin 'Twinside/vim-hoogle'
+    Plugin 'Twinside/vim-haskellFold'
+    Plugin 'mpickering/hlint-refactor-vim'
+    Plugin 'travitch/hasksyn'
+    Plugin 'lukerandall/haskellmode-vim'
+    Plugin 'adinapoli/cumino'
+    Plugin 'bitc/vim-hdevtools'
+  endif
 
-  " Python -- only load when filetype is 'python'
-  Plug 'klen/python-mode', { 'for': 'python' }
-  Plug 'yssource/python.vim', { 'for': 'python' }
-  Plug 'python_match.vim', { 'for': 'python' }
-  Plug 'pythoncomplete', { 'for': 'python' }
+  if (&filetype == 'python')
+    Plugin 'klen/python-mode'
+    Plugin 'yssource/python.vim'
+    Plugin 'python_match.vim'
+    Plugin 'pythoncomplete'
+  endif
 
-  " Ruby -- only load when filetype is 'ruby'
-  Plug 'tpope/vim-rails', { 'for': 'ruby' }
-  let g:rubycomplete_buffer_loading = 1
+  if (&filetype == 'ruby')
+    Plugin 'tpope/vim-rails'
+    let g:rubycomplete_buffer_loading = 1
+  endif
 
-  " Clojure -- only load when filetype is 'clojure'
-  Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
-  Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
+  if (&filetype == 'clojure')
+    Plugin 'guns/vim-clojure-static'
+    Plugin 'guns/vim-clojure-highlight'
+  endif
 
   " Colorschemes
-  Plug 'vim-scripts/wombat256.vim'
-  Plug 'octol/vim-cpp-enhanced-highlight'
-  Plug 'tomasr/molokai'
-  Plug 'vim-scripts/colorful256.vim'
-  Plug 'altercation/vim-colors-solarized'
-  Plug 'kien/rainbow_parentheses.vim'
+  Plugin 'vim-scripts/wombat256.vim'
+  Plugin 'octol/vim-cpp-enhanced-highlight'
+  Plugin 'tomasr/molokai'
+  Plugin 'vim-scripts/colorful256.vim'
+  Plugin 'altercation/vim-colors-solarized'
+  Plugin 'kien/rainbow_parentheses.vim'
+  Plugin 'vim-airline/vim-airline-themes'
 
   " Recommended by Stephen Diehl
-  Plug 'scrooloose/syntastic'
-  Plug 'tomtom/tlib_vim'
-  Plug 'MarcWeber/vim-addon-mw-utils'
-  Plug 'garbas/vim-snipmate'
-  Plug 'scrooloose/nerdcommenter'
-  Plug 'Shougo/neocomplete.vim'
+  Plugin 'scrooloose/syntastic'
+  Plugin 'tomtom/tlib_vim'
+  Plugin 'MarcWeber/vim-addon-mw-utils'
+  Plugin 'garbas/vim-snipmate'
+  Plugin 'scrooloose/nerdcommenter'
+  Plugin 'Shougo/neocomplete.vim'
 
-  call plug#end()
+  call vundle#end()
+
+  filetype plugin indent on
 " \end1
 
 " Plugin-Specific Configurations \begin1
@@ -114,21 +125,25 @@
     set statusline+=%*
 
     let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_aggregate_errors = 1
+    let g:syntastic_id_checkers = 1
+    let g:syntastic_echo_current_error = 1
+    let g:syntastic_cursor_column = 0
     let g:syntastic_auto_loc_list = 0
     let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
 
+    let g:syntastic_error_symbol = "\u2620"
+    let g:syntastic_style_error_symbol = "\u2622"
+    let g:syntastic_warning_symbol = "\u26A0"
+    let g:syntastic_style_warning_symbol = "\u2623"
+
     let g:syntastic_vim_checkers = ['vint']
 
-    let g:syntastic_cpp_checkers = ['gcc']
-    let g:syntastic_cpp_compiler = 'g++'
-    let g:syntastic_cpp_compiler_options = ' -std=c++11'
-
-    autocmd BufNewFile,BufRead *.java :let parentDir = expand("%:p:h:h")
     let g:syntastic_java_checkers = ['javac']
-    let g:syntastic_java_javac_classpath = parentDir.'/lib/*.jar\n'.parentDir.'/src\n'.parentDir.'/bin'
+    let g:syntastic_java_javac_classpath = "../lib/*.jar\n../src\n../bin"
     let g:syntastic_java_javac_config_file_enabled = 1
-    let g:syntastic_java_javac_config_file = parentDir.'/.syntastic_javac_config'
+    let g:syntastic_java_javac_config_file = "../.syntastic_javac_config"
 
   " \end2
 
@@ -174,11 +189,22 @@
     endfunction
   " \end2
 
-  " Ctrl-p \begin2
-    " binds the ctrl-p 'fuzzy search' panel to <leader>t (in my case ',t')
-    map <silent> <leader>t :CtrlP()<CR>
-    noremap <leader>b<Space> :CtrlPBuffer<CR>
-    let g:ctrlp_custom_ignore = { 'dir': '\v[\/](.git|.cabal-sandbox|.stack-work)$' }
+  " CtrlP \begin2
+    let g:ctrlp_custom_ignore = {
+          \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
+          \ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
+   \}
+
+    " Use the nearest .git directory as the cwd for ctrlp
+    let g:ctrlp_working_path_mode = 'r'
+
+    " Mapping for ':CtrlP' command
+    nmap <leader>p :CtrlP<CR>
+
+    " Easy bindings for various ctrlp modes
+    nmap <leader>bb :CtrlPBuffer<CR>
+    nmap <leader>bm :CtrlPMixed<CR>
+    nmap <leader>bs :CtrlPMRU<CR>
   " \end2
 
   " Colorscheme Variables \begin2
@@ -200,7 +226,10 @@
     endif
 
     let g:airline_powerline_fonts = 1
-    let g:airline_symbols.space = '\ua0'
+    let g:airline_symbols.space = "\ua0"
+
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tabline#fnamemod = ':t'
   " \end2
 
   " delimitMate \begin2
@@ -222,97 +251,3 @@
     " \end2
 " \end1
 
-" Helper Functions \begin1
-
-  " function to auto-update vim-plug on vim startup
-  function! s:UpdateVimPlug() abort
-    let l:plugins = g:plugs
-    if !empty(filter(copy(l:plugins), '!isdirectory(v:val.dir)'))
-      silent! PlugInstall
-      execute 'normal q'
-    endif
-    unlet l:plugins
-
-    silent PlugUpdate
-    execute 'normal q'
-    PlugUpgrade
-    execute "normal \<C-c>"
-  endfunction
-  "autocmd VimEnter * :call s:UpdateVimPlug()
-
-
-
-  " use 'H' in vim-plug window to open help docs for plugin under cursor
-  function! s:GetPlugHelpDocs() abort
-    let l:plug_name = matchstr(getline('.'), '^- \zs\S\+\ze:')
-    if has_key(g:plugs, l:plug_name)
-
-      for help_doc in split(globpath(g:plugs[l:plug_name].dir, 'doc/*.txt'), '\n')
-        execute 'tabe' help_doc
-      endfor
-    endif
-    unlet l:plug_name
-  endfunction
-
-  augroup plug_help
-    autocmd!
-    autocmd FileType vim-plug
-          \ nnoremap <buffer> <silent> <leader>H :call <SID>GetPlugHelpDocs()<CR>
-  augroup END
-
-
-
-  " use ',gx' to open a plugin's GitHub URL in browser (also works for commits)
-  function! s:GoToGitHub() abort
-    let l:curline = getline('.')
-    let l:sha = matchstr(l:curline, '^ \X*\zs\x\{7}\ze ')
-    let l:name = empty(l:sha) ? matchstr(l:curline, '^[-x+] \zs[^:]\+\ze:')
-                            \ : getline(search('^- .*:$', 'bn'))[2:-2]
-
-    let l:uri = get(get(g:plugs, l:name, {}), 'uri', '')
-    if l:uri !~ 'github.com'
-      return
-    endif
-
-    let l:github_repo = matchstr(l:uri, '[^:/]*/'.l:name)
-    let l:repo_url = empty(l:sha) ? 'https://github.com/' . l:github_repo
-                                \ : printf('https://github.com/%s/commit/%s', l:github_repo, l:sha)
-    unlet l:curline l:sha l:name l:uri
-
-    call netrw#BrowseX(l:repo_url, 0)
-    unlet l:github_repo l:repo_url
-  endfunction
-
-  augroup plug_gotoGitHub
-    autocmd!
-    autocmd FileType vim-plug
-          \ nnoremap <buffer> <silent> <leader>gx :call <SID>GoToGitHub()<CR>
-  augroup END
-
-
-
-  " function to scroll vim-plug preview window
-  function! s:PlugScrollPreview(down) abort
-    silent! wincmd P
-    if &previewwindow
-      execute 'normal! ' a:down ? "\<C-e>" : "\<C-y>"
-      wincmd p
-    endif
-  endfunction
-
-  
-
-  " function to setup additional mappings for use with vim-plug
-  function! s:PlugMappings() abort
-    nnoremap <buffer> <silent> J :call <SID>PlugScrollPreview(1)<CR>
-    nnoremap <buffer> <silent> K :call <SID>PlugScrollPreview(0)<CR>
-    nnoremap <buffer> <silent> <C-n> :call search('^  \X*\zs\x')<CR>
-    nnoremap <buffer> <silent> <C-p> :call search('^  \X*\zs\x', 'b')<CR>
-    nmap <buffer> <silent> <C-j> <C-n>o
-    nmap <buffer> <silent> <C-k> <C-p>o
-  endfunction
-
-  augroup plug_extraMappings
-    autocmd!
-    autocmd FileType vim-plug :call s:PlugMappings()
-  augroup END

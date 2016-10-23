@@ -20,3 +20,15 @@ policies:
     # disable warnings for using regex equality operator w/o case-sensitivity specifier (i.e. # or ?)
     ProhibitEqualTildeOperator:
         enabled: false
+
+    # disable warnings for using double quotes (broke code on occasion, when corrected...)
+    ProhibitUnnecessaryDoubleQuote:
+        enabled: false
+
+    # disable warnings for defining autocmd in "global augroup"
+    ProhibitAutocmdWithNoGroup:
+        enabled: false
+
+    # disable warnings for using commands that rely on user settings
+    ProhibitCommandRelyOnUser:
+        enabled: false

@@ -144,6 +144,7 @@
           let l:bakdir = l:bakdir.'/lost+found,' . l:curdir
           unlet l:curdir
           return l:bakdir
+        endif
       endif
     endfunction
 
@@ -173,8 +174,9 @@
 
 " User Interface Settings \begin
 
-  colorscheme peaksea
+  colorscheme molokai
   set background=dark
+  let g:airline_theme = 'molokai'
   syntax enable
 
   set tabpagemax=15
@@ -189,6 +191,10 @@
     set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%)
     set showcmd
   endif
+
+  " enable enhanced highlighting for c++11
+  autocmd BufNewFile,BufRead *.cpp,*.cxx,*.cc,*.h,*.hpp,*.hxx :set syntax=cpp.cpp11
+
 
   if has('statusline')
     set laststatus=2
@@ -214,8 +220,9 @@
   set ignorecase
   set smartcase
   set whichwrap=b,s,h,l,<,>,[,]
-  set scrolljump=-25                              " when cursor leaves screen (not <C-E>, etc.) auto-scroll 25% winheight
-  set scrolloff=10                                " maintain at least 10 lines above and below cursor
+  set scrolljump=15                               " when cursor leaves screen (not <C-E>, etc.) auto-scroll 25% winheight
+  "set scrolloff=10                                " maintain at least 10 lines above and below cursor
+  set scrolloff=0
   set foldenable
   set list
   set listchars=tab:»›,trail:∅,extends:Ϟ,nbsp:∙   " mark potentially problematic whitespace
@@ -244,6 +251,15 @@
     if !exists('g:sw_override_stripwsp') || g:sw_override_stripwsp == 0
       autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xmlyml,perl,sql :autocmd BufWritePre <buffer> :call StripTrailingWhitespace()
       function! StripTrailingWhitespace()
+        " save cursor position
+        let l:save_win = winsaveview()
+        " strip trailing whitespace
+        %s/\s\+$//e
+        " restore cursor position
+        call winrestview(l:save_win)
+      endfunction
+
+      function! StripTrailingWhitespaceOld()
         " Preparation: save last search and cursor position
         let _s=@/
         let l = line(".")
@@ -320,7 +336,7 @@
     let s:sw_aconfigmap = g:sw_override_aconfigmap
   endif
 
-  " Mappings for easier movement between tabs & windows while in Normal mode
+  " Mappings for easier movement between windows while in Normal mode
   if !exists('g:sw_override_easywindows') || g:sw_override_easywindows == 0
     nmap <C-J> <C-W>j<C-W>_
     nmap <C-K> <C-W>k<C-W>_
@@ -329,8 +345,8 @@
   endif
 
   " center cursor vertically within window when moving with 'j' or 'k'
-  noremap j jzz
-  noremap k kzz
+  "noremap j jzz
+  "noremap k kzz
 
   " Mappings for use with 'RelativeWrap(key,...)' in "Helper Functions"
   "   these map start/end of line motion commands to behave relative to the current row instead of moving to the
@@ -386,6 +402,8 @@
     nmap <leader>f7 :set foldlevel=7<CR>
     nmap <leader>f8 :set foldlevel=8<CR>
     nmap <leader>f9 :set foldlevel=9<CR>
+    " mapping for ':set foldenable!' to toggle folding
+    nmap <leader>f! :set foldenable!<CR>
   " \end
 
   " Enable toggling of search-result highlighting (instead of clearing of results) with <leader>/
@@ -427,10 +445,31 @@
     " easier auto-formatting
     nnoremap <silent> <leader>q gwip
 
-    " not sure what this does and it had a 'FIXME' w/ pull request so it's out for now, source: http://github.com/spf13/spf13-vim.git
-    " FIXME: revert this - see f70be548
-    " quickly toggle fullscreen mode for GVim and TermVim - requires that 'wmctrl' be in PATH
-    " map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
+    " open a new (empty) buffer
+    nmap <leader>T :enew<CR>
+
+    " move to next buffer
+    nmap <leader>l :bnext<CR>
+
+    " move to previous buffer
+    nmap <leader>h :bprevious<CR>
+
+    " close current buffer and move to previous one
+    nmap <leader>bq :bp <BAR> bd #<CR>
+
+    " list buffers and their statuses
+    nmap <leader>bl :ls<CR>
+
+    " jump to buffer # (so far only 1-9 mapped)
+    nmap <leader>b1 :1b<CR>
+    nmap <leader>b2 :2b<CR>
+    nmap <leader>b3 :3b<CR>
+    nmap <leader>b4 :4b<CR>
+    nmap <leader>b5 :5b<CR>
+    nmap <leader>b6 :6b<CR>
+    nmap <leader>b7 :7b<CR>
+    nmap <leader>b8 :8b<CR>
+    nmap <leader>b9 :9b<CR>
   " \end
 
   " mapping to open file prompt using current buffer's path
