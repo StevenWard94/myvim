@@ -472,6 +472,11 @@
     nmap <leader>b9 :9b<CR>
   " \end
 
+  " mappings for 'diffget...' commands
+  nmap <leader>RE :diffget REMOTE
+  nmap <leader>BA :diffget BASE
+  nmap <leader>LO :diffget LOCAL
+
   " mapping to open file prompt using current buffer's path
   nmap <leader>e :e <C-r>=expand("%:p:h") . '/'<CR>
 

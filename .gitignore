@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # .gitignore file for StevenWard94/.myvim -- local: ~/.vim/
 # a description will precede each pattern listed here
 
@@ -17,3 +18,8 @@ spell/*
 !spell/en*.sug
 !spell/en*.spl
 !spell/en_US.diff
+=======
+doc/tags
+*.lock
+.vim-flavor
+>>>>>>> 64d91665fe7b979653fe2b3610e3441afdc69aa8

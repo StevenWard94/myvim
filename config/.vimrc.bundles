@@ -25,7 +25,6 @@
   Plugin 'benekastah/neomake'
   Plugin 'moll/vim-bbye'
   Plugin 'nathanaelkane/vim-indent-guides'
-  Plugin 'vim-scripts/gitignore'
   Plugin 'Shougo/neosnippet'
   Plugin 'Shougo/neosnippet-snippets'
   Plugin 'honza/vim-snippets'
