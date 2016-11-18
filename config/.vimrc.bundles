@@ -4,7 +4,7 @@
 " Language:       N/A
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/stevenward94/myvim
-" Last Change:    2016 Oct 15
+" Last Change:    2016 Nov 16
 " ------------------------------------------------------------------------------
 
 " Setup \begin1
@@ -21,7 +21,7 @@
   Plugin 'Raimondi/delimitMate'
   Plugin 'jgdavey/tslime.vim'
   Plugin 'Shougo/vimproc.vim'
-  Plugin 'ervandew/supertab'
+  "Plugin 'ervandew/supertab'
   Plugin 'benekastah/neomake'
   Plugin 'moll/vim-bbye'
   Plugin 'nathanaelkane/vim-indent-guides'
@@ -132,17 +132,22 @@
     let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
 
-    let g:syntastic_error_symbol = "\u2620"
-    let g:syntastic_style_error_symbol = "\u2622"
-    let g:syntastic_warning_symbol = "\u26A0"
-    let g:syntastic_style_warning_symbol = "\u2623"
+    let g:syntastic_error_symbol = '❌'
+    let g:syntastic_style_error_symbol = '⁉️'
+    let g:syntastic_warning_symbol = '⚠️'
+    let g:syntastic_style_warning_symbol = '💩'
 
     let g:syntastic_vim_checkers = ['vint']
 
     let g:syntastic_java_checkers = ['javac']
-    let g:syntastic_java_javac_classpath = "../lib/*.jar\n../src\n../bin"
-    let g:syntastic_java_javac_config_file_enabled = 1
-    let g:syntastic_java_javac_config_file = "../.syntastic_javac_config"
+    let g:syntastic_java_javac_classpath = "./lib/*.jar:./src:./bin:"
+
+    if exists(':Syntastic') != 0
+      highlight link SyntasticErrorSign SignColumn
+      highlight link SyntasticWarningSign SignColumn
+      highlight link SyntasticStyleErrorSign SignColumn
+      highlight link SyntasticStyleWarningSign SignColumn
+    endif
 
   " \end2
 
@@ -248,5 +253,10 @@
       autocmd FileType haskell :call s:Tabularize_hask()
     augroup END
     " \end2
+
+    " Easymotion \begin2
+      map <LocalLeader> <Plug>(easymotion-prefix)
+    " \end2
+      
 " \end1
 
