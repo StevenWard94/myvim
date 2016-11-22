@@ -220,6 +220,9 @@
     if !exists('g:rehash256') || g:rehash256 == 0
       let g:rehash256 = 1
     endif
+
+    " vim-colors-solarized
+    let g:solarized_termcolors=256
   " \end2
 
   " Airline \begin2
