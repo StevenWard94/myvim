@@ -4,7 +4,7 @@
 " Language:       N/A
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/stevenward94/myvim
-" Last Change:    2016 Nov 16
+" Last Change:    2016 Nov 25
 " ------------------------------------------------------------------------------
 
 " Setup \begin1
@@ -95,7 +95,7 @@
   " Colorschemes
   Plugin 'vim-scripts/wombat256.vim'
   Plugin 'octol/vim-cpp-enhanced-highlight'
-  Plugin 'tomasr/molokai'
+  "Plugin 'tomasr/molokai'
   Plugin 'vim-scripts/colorful256.vim'
   Plugin 'altercation/vim-colors-solarized'
   Plugin 'kien/rainbow_parentheses.vim'
@@ -212,14 +212,6 @@
   " \end2
 
   " Colorscheme Variables \begin2
-
-    " molokai
-    if exists('g:molokai_original')
-      unlet g:molokai_original
-    endif
-    if !exists('g:rehash256') || g:rehash256 == 0
-      let g:rehash256 = 1
-    endif
 
     " vim-colors-solarized
     let g:solarized_termcolors=256

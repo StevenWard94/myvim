@@ -147,8 +147,9 @@
 
 " User Interface Settings \begin
 
-  colorscheme wombat256mod
-  set background=dark
+  let g:rehash256 = 1
+  colorscheme molokai
+  "set background=dark
   let g:airline_theme = 'molokai'
   syntax enable
 
@@ -456,12 +457,12 @@
   nnoremap <leader>. :call <SID>UnjoinCommand()<CR>
 
   " mappings for location list navigation commands
-    nnoremap el :ll<CR>
-    nnoremap en :lnext<CR>
-    nnoremap ep :lprev<CR>
+    nnoremap <leader>ll :ll<CR>
+    nnoremap <leader>lj :lnext<CR>
+    nnoremap <leader>lk :lprev<CR>
 
-    nnoremap e0 :lrewind<CR>
-    nnoremap e$ :llast<CR>
+    nnoremap <leader>l0 :lrewind<CR>
+    nnoremap <leader>l$ :llast<CR>
 " \end
 
 " Helper Functions \begin
