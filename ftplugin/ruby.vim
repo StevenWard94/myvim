@@ -13,8 +13,8 @@ if exists( 'b:did_ftplugin' )
 endif
 let b:did_ftplugin = 1
 
-let s:cpo_save = &cpo
-set cpo&vim
+let s:cpo_save = &cpoptions
+set cpoptions&vim
 
 if has( 'gui_running' ) && !has( 'gui_win32' )
   setlocal keywordprg=ri\ -T\ -f\ bs
@@ -158,7 +158,7 @@ let b:undo_ftplugin = "setl fo< inc< inex< sua< def< com< cms< path< tags< kp<"
 function! s:map( mode, flags, map ) abort
   let from = matchstr( a:map, '\S\+' )
   if empty( mapcheck( from, a:mode ) )
-    execute a:mode . 'map' '<buffer>' . (a:0 ? a:1 : '') a:map
+    execute a:mode . 'map' '<buffer>' . (a:flags ? a:flags : '') a:map
     let b:undo_ftplugin .= '|silent! ' . a:mode . 'unmap <buffer> ' . from
   endif
 endfunction
@@ -232,7 +232,7 @@ if !exists('g:no_plugin_maps') && !exists('g:no_ruby_maps')
   call s:map( 'n', '<silent>', '<C-W>gf   <SID>c:tabfind <Plug><cfile><CR>' )
 endif
 
-let &cpo = s:cpo_save
+let &cpoptions = s:cpo_save
 unlet s:cpo_save
 
 if exists('g:did_ruby_ftplugin_functions')

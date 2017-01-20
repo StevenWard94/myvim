@@ -36,6 +36,27 @@
     set exrc
   " \end
 
+  " define a helpful environment variable that points to vim user directory
+  if exists("$MYVIMRC")
+    let vim_home = fnamemodify(expand("$MYVIMRC"), ":p:h").'/.vim'
+    if isdirectory(vim_home)
+      let $VIMHOME = vim_home
+    endif
+    unlet vim_home
+  endif
+  if !exists("$VIMHOME") && exists("$HOME")
+    let ls_home = split(system('ls -A $HOME'), '\n')
+    let index = match(ls_home, '^\.vim$')
+    if index != -1
+      let $VIMHOME = ls_home[index]
+    endif
+    unlet ls_home
+    unlet index
+  endif
+  if exists("$VIMHOME")
+    let $MYVIM = $VIMHOME    " environment variable (alias) pointing to $VIMHOME
+  endif
+
   set background=dark
   " create function to toggle background and map it to <leader>bg \begin
     function! ToggleBackground()
@@ -54,7 +75,9 @@
     set term=$TERM
   endif
 
-  filetype plugin indent on
+  if !exists('g:bundles_config_loaded')
+    filetype plugin indent on
+  endif
   syntax on
   set mouse=a                                   " enable mouse usage automatically for all modes
   set mousehide                                 " hide cursor when typing
@@ -70,7 +93,7 @@
 
   " automatically change working directory that of the file currently open in the buffer
   if !exists('g:sw_override_autochdir') || g:sw_override_autochdir == 0
-   autocmd BufEnter * :if bufname("") !~ "^\[A-Za-z0-9\]*://" && bufname("") !~ "^.*\.java$" | lcd %:p:h | endif
+   autocmd BufEnter * :if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
   endif
 
   " use GHC functionality for haskell files
@@ -128,14 +151,7 @@
     set noswapfile
 
     " source my .vimrc after writing it -- applies changes
-    augroup rc_reload
-      autocmd!
-      if has('nvim')
-        autocmd BufWritePost init.vim source $MYVIMRC
-      else
-        autocmd BufWritePost .vimrc source $MYVIMRC
-      endif
-    augroup END
+    "autocmd BufWritePost .vimrc source $MYVIMRC
 
     if !exists('g:sw_override_views') || g:sw_override_views == 0
       let g:skipview_files = [
@@ -146,6 +162,10 @@
 " \end
 
 " User Interface Settings \begin
+  
+  if &t_Co < 256
+    let &t_Co = match($TERM, '256') != -1 ? 256 : &t_Co
+  endif
 
   let g:rehash256 = 1
   colorscheme molokai
@@ -157,6 +177,7 @@
   set showmode
 
   set cursorline
+  "highlight CursorLine ctermbg=234
   highlight clear SignColumn      " make SignColumn background match editor
   highlight clear LineNr          " current line # row will have same background w/ relativenumber set
 
@@ -168,6 +189,9 @@
 
   " enable enhanced highlighting for c++11
   autocmd BufNewFile,BufRead *.cpp,*.cxx,*.cc,*.h,*.hpp,*.hxx :set syntax=cpp.cpp11
+
+  " enable enhanced highlighting for Java
+  autocmd BufNewFile,BufRead *.java :let java_highlight_all = 1
 
 
   if has('statusline')
@@ -184,7 +208,7 @@
   endif
 
   set backspace=indent,eol,start
-  set linespace=0
+  set linespace=3
   set number
   set relativenumber
   set showmatch
@@ -200,6 +224,9 @@
   set foldenable
   set list
   set listchars=tab:»›,trail:∅,extends:Ϟ,nbsp:∙   " mark potentially problematic whitespace
+
+  set tags=../.tags/tags,./.tags
+
 " \end
 
 " Text Formatting Settings \begin
@@ -249,6 +276,7 @@
 
   "autocmd FileType go :autocmd BufWritePre <buffer> :Fmt
   autocmd BufNewFile,BufRead *.html.twig :set filetype=html.twig
+  autocmd BufNewFile,BufRead *.gs :set filetype=javascript
   autocmd FileType puppet,ruby,vim,yml :setlocal expandtab shiftwidth=2 softtabstop=2
 
   autocmd BufNewFile,BufRead *.coffee set filetype=coffee
@@ -302,8 +330,8 @@
   else
     let s:sw_aconfigmap = g:sw_override_aconfigmap
   endif
-  execute "noremap " . s:sw_econfigmap . " :call <SID>EditMyConfig()<CR>"
-  execute "noremap " . s:sw_aconfigmap . " :source ~/.vimrc<CR>"
+  execute "noremap " . s:sw_econfigmap . " :silent! call <SID>EditMyConfig()<CR>"
+  execute "noremap " . s:sw_aconfigmap . " :silent! call <SID>ApplyMyConfig()<CR>"
 
   " Mappings for easier movement between windows while in Normal mode
   if !exists('g:sw_override_easywindows') || g:sw_override_easywindows == 0
@@ -391,7 +419,11 @@
     vnoremap . :normal .<CR>
 
     " actually writes files when they should have been opened with 'sudo' but weren't
-    cmap w!! w !sudo tee % >/dev/null
+    function! g:SudoSave() abort
+      execute (has('gui_running') ? '' : 'silent') 'write !env SUDO_EDITOR=tee sudo -e % > /dev/null'
+      let &modified = v:shell_error
+    endfunction
+    cmap w!! :call g:SudoSave()
 
     " some ':edit' mode helpers [http://vimcasts.org/e/14]
     " conflicted with previously mapped keys for editing/applying my .vimrc
@@ -486,6 +518,30 @@
     execute "edit " . expand("~/.vimrc") . " | edit " . expand("~/.vimrc.bundles") . " | bprevious"
   endfunction
 
+  function! s:ApplyMyConfig()
+    let l:vimrc_bufnr = bufnr(bufname('\.vimrc$'))
+    let l:bndls_bufnr = bufnr(bufname('\.vimrc\.bundles$'))
+    let l:cur_bufnr = bufnr("%")
+
+    if getbufvar(l:bndls_bufnr, "&mod")
+      execute 'buffer ' . l:bndls_bufnr
+      write
+    endif
+    if getbufvar(l:vimrc_bufnr, "&mod")
+      execute 'buffer ' . l:vimrc_bufnr
+      write
+    endif
+    execute 'buffer ' . l:cur_bufnr
+    execute 'bdelete ' . ( l:vimrc_bufnr != -1 ? l:vimrc_bufnr.' ' : '' ) . ( l:bndls_bufnr != -1 ? l:bndls_bufnr : '' )
+
+    unlet l:vimrc_bufnr
+    unlet l:bndls_bufnr
+    unlet l:cur_bufnr
+    source ~/.vimrc 
+  endfunction
+
+
+
   function! s:CharUnderCursor()
     return matchstr(getline('.'), '\%' . col('.') . 'c.')
   endfunction
@@ -510,5 +566,5 @@
     unlet l:cursor_char
     unlet l:line_indent
   endfunction
-    
+
 " \end

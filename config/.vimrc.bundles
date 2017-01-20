@@ -4,114 +4,99 @@
 " Language:       N/A
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/stevenward94/myvim
-" Last Change:    2016 Nov 25
+" Last Change:    2017 Jan 17
 " ------------------------------------------------------------------------------
 
+if exists('g:bundles_config_loaded')
+  finish
+endif
+let g:bundles_config_loaded = 1
+
 " Setup \begin1
-  set nocompatible
-  filetype off
 
-  " Load plugins using Vundle <https://github.com/VundleVim/Vundle.vim>
-  set runtimepath+=~/.vim/bundle/Vundle.vim
-  call vundle#begin()
+  " Load plugins using Vim-Plug <https://github.com/junegunn/vim-plug>
+  call plug#begin('~/.vim/bundle')
 
-  Plugin 'VundleVim/Vundle.vim'
+  "Plug 'VundleVim/Vundle.vim'
 
   " Support Bundles
-  Plugin 'Raimondi/delimitMate'
-  Plugin 'jgdavey/tslime.vim'
-  Plugin 'Shougo/vimproc.vim'
-  "Plugin 'ervandew/supertab'
-  Plugin 'benekastah/neomake'
-  Plugin 'moll/vim-bbye'
-  Plugin 'nathanaelkane/vim-indent-guides'
-  Plugin 'Shougo/neosnippet'
-  Plugin 'Shougo/neosnippet-snippets'
-  Plugin 'honza/vim-snippets'
-  " source 'support_functions.vim' to support vim-snippets
-  if filereadable(expand('~/.vim/bundle/vim-snippets/snippets/support_functions.vim'))
-    source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
-  endif
-  Plugin 'mattn/webapi-vim'
-  Plugin 'mattn/gist-vim'
-  Plugin 'luochen1990/rainbow'
+  Plug 'Raimondi/delimitMate'
+  Plug 'nathanaelkane/vim-indent-guides'
+  Plug 'mattn/webapi-vim'
+  Plug 'mattn/gist-vim'
+  Plug 'kien/rainbow_parentheses.vim'
   if executable('ctags')
-    Plugin 'majutsushi/tagbar'
+    Plug 'majutsushi/tagbar', { 'on': ['TagbarOpen', 'TagbarToggle', 'TagbarOpenAutoClose'] }
   endif
-  Plugin 'tpope/vim-surround'
-  Plugin 'tpope/vim-repeat'
+  Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-repeat'
+  Plug 'abudden/taghighlight-automirror', { 'on': [] }
+  Plug 'file:///home/steven/Downloads/git-from-hg/easycolour'
+  Plug 'xolox/vim-easytags'
+  Plug 'xolox/vim-misc'
 
   " Git
-  Plugin 'tpope/vim-fugitive'
-  Plugin 'int3/vim-extradite'
-  Plugin 'rhysd/conflict-marker.vim'
+  Plug 'tpope/vim-fugitive'
+  Plug 'int3/vim-extradite'
+  Plug 'rhysd/conflict-marker.vim'
 
   " Bars, Panels & Files
-  Plugin 'scrooloose/nerdtree'
-  Plugin 'ctrlpvim/ctrlp.vim'
-  Plugin 'tacahiroy/ctrlp-funky'
-  Plugin 'vim-airline/vim-airline'
+  Plug 'scrooloose/nerdtree', { 'on': ['NERDTree', 'NERDTreeToggle'] }
+  "Plug 'ctrlpvim/ctrlp.vim'
+  "Plug 'tacahiroy/ctrlp-funky'
+  Plug 'vim-airline/vim-airline'
 
   " Text Manipulation
-  Plugin 'vim-scripts/Align'
-  Plugin 'simnalamburt/vim-mundo'
-  Plugin 'tpope/vim-commentary'
-  Plugin 'godlygeek/tabular'
-  Plugin 'michaeljsmith/vim-indent-object'
-  Plugin 'easymotion/vim-easymotion'
+  Plug 'simnalamburt/vim-mundo'
+  Plug 'tpope/vim-commentary'
+  Plug 'godlygeek/tabular'
+  Plug 'michaeljsmith/vim-indent-object'
+  Plug 'easymotion/vim-easymotion'
 
-  if (&filetype == 'haskell')
-    Plugin 'itchyny/haskell-indent-vim'
-    Plugin 'neovimhaskell/haskell-vim'
-    Plugin 'enomsg/vim-haskellConcealPlus'
-    Plugin 'eagletmt/ghcmod-vim'
-    Plugin 'eagletmt/neco-ghc'
-    Plugin 'Twinside/vim-hoogle'
-    Plugin 'Twinside/vim-haskellFold'
-    Plugin 'mpickering/hlint-refactor-vim'
-    Plugin 'travitch/hasksyn'
-    Plugin 'lukerandall/haskellmode-vim'
-    Plugin 'adinapoli/cumino'
-    Plugin 'bitc/vim-hdevtools'
-  endif
+  "if (&filetype == 'haskell')
+    Plug 'itchyny/haskell-indent-vim', { 'for': 'haskell' }
+    Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+    Plug 'enomsg/vim-haskellConcealPlus', { 'for': 'haskell' }
+    Plug 'eagletmt/ghcmod-vim', { 'for': 'haskell' }
+    Plug 'eagletmt/neco-ghc', { 'for': 'haskell' }
+    Plug 'Twinside/vim-hoogle', { 'for': 'haskell' }
+    Plug 'Twinside/vim-haskellFold', { 'for': 'haskell' }
+    Plug 'mpickering/hlint-refactor-vim', { 'for': 'haskell' }
+    Plug 'travitch/hasksyn', { 'for': 'haskell' }
+    Plug 'lukerandall/haskellmode-vim', { 'for': 'haskell' }
+    Plug 'adinapoli/cumino', { 'for': 'haskell' }
+    Plug 'bitc/vim-hdevtools', { 'for': 'haskell' }
+  "endif
 
-  if (&filetype == 'python')
-    Plugin 'klen/python-mode'
-    Plugin 'yssource/python.vim'
-    Plugin 'python_match.vim'
-    Plugin 'pythoncomplete'
-  endif
+  Plug 'klen/python-mode', { 'for': 'python' }
+  Plug 'yssource/python.vim', { 'for': 'python' }
+  Plug 'python_match.vim', { 'for': 'python' }
 
-  if (&filetype == 'ruby')
-    Plugin 'tpope/vim-rails'
-    let g:rubycomplete_buffer_loading = 1
-  endif
+  Plug 'tpope/vim-rails', { 'for': 'ruby' }
+  let g:rubycomplete_buffer_loading = 1
 
-  if (&filetype == 'clojure')
-    Plugin 'guns/vim-clojure-static'
-    Plugin 'guns/vim-clojure-highlight'
-  endif
+  " Clojure
+  Plug 'guns/vim-clojure-static', { 'for': 'clojure' }
+  Plug 'guns/vim-clojure-highlight', { 'for': 'clojure' }
+  Plug 'tpope/vim-salve', { 'for': 'clojure' }
+  Plug 'tpope/vim-projectionist', { 'for': 'clojure' }
+  Plug 'tpope/vim-dispatch', { 'for': 'clojure' }
+  Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+  Plug 'venantius/vim-eastwood', { 'for': 'clojure' }
+  Plug 'tpope/vim-classpath', { 'for': 'clojure' }
 
   " Colorschemes
-  Plugin 'vim-scripts/wombat256.vim'
-  Plugin 'octol/vim-cpp-enhanced-highlight'
-  "Plugin 'tomasr/molokai'
-  Plugin 'vim-scripts/colorful256.vim'
-  Plugin 'altercation/vim-colors-solarized'
-  Plugin 'kien/rainbow_parentheses.vim'
-  Plugin 'vim-airline/vim-airline-themes'
+  Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
+  Plug 'vim-scripts/colorful256.vim'
+  Plug 'vim-airline/vim-airline-themes'
 
   " Recommended by Stephen Diehl
-  Plugin 'scrooloose/syntastic'
-  Plugin 'tomtom/tlib_vim'
-  Plugin 'MarcWeber/vim-addon-mw-utils'
-  Plugin 'garbas/vim-snipmate'
-  Plugin 'scrooloose/nerdcommenter'
-  Plugin 'Shougo/neocomplete.vim'
+  Plug 'scrooloose/syntastic'
+  Plug 'tomtom/tlib_vim'
+  Plug 'MarcWeber/vim-addon-mw-utils'
 
-  call vundle#end()
+  call plug#end()
 
-  filetype plugin indent on
 " \end1
 
 " Plugin-Specific Configurations \begin1
@@ -119,6 +104,10 @@
   " Syntastic \begin2
     map <Leader>s :SyntasticToggleMode<CR>
 
+    let g:syntastic_statusline_short = '[%E{E:%e(#%fe)}%B{,}%W{W:%w(#%fw)}]'
+    let g:syntastic_statusline_long = '[%E{Err: %e (L-%fe)}%B{, }%W{Warn: %w (L-%fw)}]'
+
+    let g:syntastic_stl_format = g:syntastic_statusline_long
     set statusline+=%#warningmsg#
     set statusline+=%{SyntasticStatuslineFlag()}
     set statusline+=%*
@@ -140,7 +129,15 @@
     let g:syntastic_vim_checkers = ['vint']
 
     let g:syntastic_java_checkers = ['javac']
-    let g:syntastic_java_javac_classpath = "./lib/*.jar:./src:./bin:"
+
+    " prevent syntax checking on profiles.clj or project.clj files
+    function! Eastwood_EnableDisable()
+      let l:disable_eastwood = bufname("") =~ '\<pro\(files\|ject\)\.clj\>'
+      let b:syntastic_checkers = l:disable_eastwood ? [] : ['eastwood']
+      let b:syntastic_mode = l:disable_eastwood ? 'passive' : 'active'
+      unlet l:disable_eastwood
+    endfunction
+    autocmd BufEnter *.clj :call Eastwood_EnableDisable()
 
     if exists(':Syntastic') != 0
       highlight link SyntasticErrorSign SignColumn
@@ -151,6 +148,35 @@
 
   " \end2
 
+  " Python-Mode \begin2
+    if &filetype =~# '^python$'
+      let g:pymode_lint_on_write = 0
+      let g:pymode_lint_checkers = ['pylint', 'pep8']
+
+      let g:pymode_rope_lookup_project = 0
+      let g:pymode_rope_complete_on_dot = 0
+      let g:pymode_rope = 0
+    endif
+
+  " \end2
+
+  " Easytags \begin2
+    autocmd VimEnter .gvimrc,.vimrc,.vimrc.*,*.vim :call <SID>DisableVimEasytags()
+    let g:easytags_dynamic_files = 1
+    let g:easytags_by_filetype = '/home/steven/lib/.tags'
+    let g:easytags_syntax_keyword = 'always'
+    let g:easytags_async = 1
+
+    function! s:DisableVimEasytags() abort
+      if exists('g:easytags_events')
+        unlet g:easytags_events
+      endif
+      let g:easytags_on_cursorhold = 0
+      let g:easytags_auto_update = 0
+      let g:easytags_auto_highlight = 0
+    endfunction
+  " \end2
+
   " GHC-Mod \begin2
     function! s:GHCmod_hask() abort
       map <silent> tw :GhcModTypeInsert<CR>
@@ -158,18 +184,6 @@
       map <silent> tq :GhcModType<CR>
       map <silent> te :GhcModTypeClear<CR>
     endfunction
-  " \end2
-
-  " SuperTab \begin2
-    let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
-
-    if has('gui_running')
-      imap <C-Space> <C-r>=SuperTabAlternateCompletion("\<lt>C-x>\<lt>C-o>")<CR>
-    else
-      if has('unix')
-        inoremap <Nul> <C-r>=SuperTabAlternateCompletion("\<lt>C-x>\<lt>C-o>")<CR>
-      endif
-    endif
   " \end2
 
   " Neco-GHC \begin2
@@ -211,12 +225,6 @@
     nmap <leader>bs :CtrlPMRU<CR>
   " \end2
 
-  " Colorscheme Variables \begin2
-
-    " vim-colors-solarized
-    let g:solarized_termcolors=256
-  " \end2
-
   " Airline \begin2
 
     " Use powerline fonts for airline
@@ -227,6 +235,7 @@
     let g:airline_powerline_fonts = 1
     let g:airline_symbols.space = "\ua0"
 
+    let g:airline#extensions#tagbar#enabled = 0
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#fnamemod = ':t'
   " \end2
@@ -251,6 +260,13 @@
 
     " Easymotion \begin2
       map <LocalLeader> <Plug>(easymotion-prefix)
+    " \end2
+
+    " Rainbow Parentheses \begin2
+      autocmd VimEnter * RainbowParenthesesToggle
+      autocmd Syntax * RainbowParenthesesLoadRound
+      autocmd Syntax * RainbowParenthesesLoadSquare
+      autocmd Syntax * RainbowParenthesesLoadBraces
     " \end2
       
 " \end1

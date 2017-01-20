@@ -1,12 +1,11 @@
-<<<<<<< HEAD
 # .gitignore file for StevenWard94/.myvim -- local: ~/.vim/
 # a description will precede each pattern listed here
 
-# ignore all files & directories within the 'colors/' directory BUT NOT THE DIRECTORY ITSELF
-colors/**
+# ignore the 'colors/' directory and all its subdirectories
+colors/
 
-# ignore all files & directories within the 'bundle/' directory BUT NOT THE DIRECTORY ITSELF
-bundle/**
+# ignore the 'bundle/' directory and all its subdirectories
+bundle/
 
 # ignore the '.tmp/' directory and all of its contents - this directory is a temporary storage area to exclude
 #   extensively incomplete files that vim could potentially attempt to apply, which would cause some issues...
@@ -18,8 +17,7 @@ spell/*
 !spell/en*.sug
 !spell/en*.spl
 !spell/en_US.diff
-=======
+
 doc/tags
 *.lock
 .vim-flavor
->>>>>>> 64d91665fe7b979653fe2b3610e3441afdc69aa8

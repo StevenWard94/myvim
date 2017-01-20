@@ -10,6 +10,35 @@
 " Source:       http://vim.wikia.com/wiki/List_loaded_scripts
 " ======================================================================================
 
+function! s:Scratch (command, ...)
+  redir => lines
+  let l:save_more = &more
+  set nomore
+  silent execute a:command
+  redir END
+  let &more = l:save_more
+  call feedkeys("\<CR>")
+  enew | setlocal buftype=nofile bufhidden=hide noswapfile nonumber norelativenumber
+  put=lines
+  if a:0 > 0
+    execute 'vglobal/' . a:1 . '/delete'
+  endif
+  if a:command == 'scriptnames'
+    %substitute#^[[:space:]]*[[:digit:]]\+:[[:space:]]*##e
+  endif
+  silent %substitute/\%^\_s*\n\|\_s*\%$
+  let l:height = line('$') + 3
+  execute 'normal! z' . l:height . "\<CR>"
+  unlet l:save_more
+  unlet l:height
+  0
+endfunction
+
+command! -nargs=? Scriptnames :call <SID>Scratch('scriptnames', <f-args>)
+command! -nargs=+ Scratch     :call <SID>Scratch(<f-args>)
+
+
+
 " Execute 'cmd' while redirecting output.
 " Delete all lines that do not match regexp 'filter' (if not empty).
 " Delete any blank lines.
@@ -33,31 +62,3 @@ function! Filter_Lines(cmd, filter)
   endif
   0
 endfunction
-
-
-function! s:Scratch (command, ...)
-  redir => lines
-  let l:save_more = &more
-  set nomore
-  silent execute a:command
-  redir END
-  let &more = l:save_more
-  call feedkeys("\<CR>")
-  enew | setlocal buftype=nofile bufhidden=hide noswapfile
-  put=lines
-  if a:0 > 0
-    execute 'vglobal/' . a:1 . '/delete'
-  endif
-  if a:command == 'scriptnames'
-    %substitute#^[[:space:]]*[[:digit:]]\+:[[:space:]]*##e
-  endif
-  silent %substitute/\%^\_s*\n\|\_s*\%$
-  let l:height = line('$') + 3
-  execute 'normal! z' . l:height . "<\CR>"
-  unlet l:save_more
-  unlet l:height
-  0
-endfunction
-
-command! -nargs=? Scriptnames :call <SID>Scratch('scriptnames', <f-args>)
-command! -nargs=+ Scratch     :call <SID>Scratch(<f-args>)
