@@ -4,7 +4,7 @@
 " Language:       N/A
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/stevenward94/myvim
-" Last Change:    2017 Jan 17
+" Last Change:    2017 Feb 1
 " ------------------------------------------------------------------------------
 
 if exists('g:bundles_config_loaded')
@@ -26,7 +26,7 @@ let g:bundles_config_loaded = 1
   Plug 'mattn/gist-vim'
   Plug 'kien/rainbow_parentheses.vim'
   if executable('ctags')
-    Plug 'majutsushi/tagbar', { 'on': ['TagbarOpen', 'TagbarToggle', 'TagbarOpenAutoClose'] }
+    Plug 'https://github.com/StevenWard94/tagbar.git', { 'on': ['TagbarOpen', 'TagbarToggle', 'TagbarOpenAutoClose'] }
   endif
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-repeat'
@@ -45,6 +45,10 @@ let g:bundles_config_loaded = 1
   "Plug 'ctrlpvim/ctrlp.vim'
   "Plug 'tacahiroy/ctrlp-funky'
   Plug 'vim-airline/vim-airline'
+
+  " TMUX Related Plugins (related is used loosely...)
+  Plug 'tmux-plugins/vim-tmux' 
+  Plug 'christoomey/vim-tmux-navigator'
 
   " Text Manipulation
   Plug 'simnalamburt/vim-mundo'
@@ -71,6 +75,7 @@ let g:bundles_config_loaded = 1
   Plug 'klen/python-mode', { 'for': 'python' }
   Plug 'yssource/python.vim', { 'for': 'python' }
   Plug 'python_match.vim', { 'for': 'python' }
+  Plug 'elzr/vim-json', {'for': 'json' }
 
   Plug 'tpope/vim-rails', { 'for': 'ruby' }
   let g:rubycomplete_buffer_loading = 1
@@ -129,6 +134,8 @@ let g:bundles_config_loaded = 1
     let g:syntastic_vim_checkers = ['vint']
 
     let g:syntastic_java_checkers = ['javac']
+
+    let g:syntastic_json_checkers = ['jsonlint']
 
     " prevent syntax checking on profiles.clj or project.clj files
     function! Eastwood_EnableDisable()
@@ -226,12 +233,11 @@ let g:bundles_config_loaded = 1
   " \end2
 
   " Airline \begin2
-
-    " Use powerline fonts for airline
     if !exists('g:airline_symbols')
       let g:airline_symbols = {}
     endif
 
+    " Use powerline fonts for airline
     let g:airline_powerline_fonts = 1
     let g:airline_symbols.space = "\ua0"
 

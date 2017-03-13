@@ -224,6 +224,7 @@
   set foldenable
   set list
   set listchars=tab:»›,trail:∅,extends:Ϟ,nbsp:∙   " mark potentially problematic whitespace
+  set nrformats+=alpha                            " allow use of CTRL-A and CTRL-X to inc/decrement letters in normal mode
 
   set tags=../.tags/tags,./.tags
 
