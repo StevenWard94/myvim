@@ -21,3 +21,5 @@ spell/*
 doc/tags
 *.lock
 .vim-flavor
+
+*.old
