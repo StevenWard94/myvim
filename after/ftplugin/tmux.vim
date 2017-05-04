@@ -2,7 +2,7 @@
 " Language:       tmux configuration files
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/StevenWard94/myvim
-" Last Change:    2017 Jan 27
+" Last Change:    2017 Mar 18
 " ======================================================================================
 
 if exists(':DelimitMate') != 0
