@@ -2,10 +2,10 @@
 # a description will precede each pattern listed here
 
 # ignore the 'colors/' directory and all its subdirectories
-colors/
+# colors/
 
 # ignore the 'bundle/' directory and all its subdirectories
-bundle/
+bundle/*
 
 # ignore the '.tmp/' directory and all of its contents - this directory is a temporary storage area to exclude
 #   extensively incomplete files that vim could potentially attempt to apply, which would cause some issues...
