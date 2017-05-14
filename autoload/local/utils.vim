@@ -6,7 +6,7 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " define a helpful environment variable that points to vim user directory
-function! s:define_vimhome()
+function! local#utils#define_vimhome()
   if exists("$MYVIMRC")
     let l:vim_home = fnamemodify(expand("$MYVIMRC"), ":p:h").'/.vim'
     if isdirectory(l:vim_home)
@@ -24,7 +24,6 @@ function! s:define_vimhome()
     return $VIMHOME    " environment variable (alias) pointing to $VIMHOME
   endif
 endfunction
-let $VIMHOME = s:define_vimhome()
 
 
 " Function to check if a plugin has been installed to the '.vim/bundle' directory.
