@@ -22,4 +22,4 @@ doc/tags
 *.lock
 .vim-flavor
 
-*.old
+*.old*
