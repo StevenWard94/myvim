@@ -1,0 +1,1 @@
+/home/steven/.vim/bundle/colorful256.vim/colors/colorful256.vim

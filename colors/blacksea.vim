@@ -31,6 +31,7 @@ hi Statement guifg=brown3 ctermfg=DarkRed
 hi Search guibg=Gold3 ctermfg=White
 hi Folded guibg=gray20
 hi FoldColumn guibg=gray10
+hi CursorLine ctermbg=234
 
 " Original values:
 "hi Constant guifg=DeepPink

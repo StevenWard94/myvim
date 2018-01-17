@@ -7,8 +7,6 @@
 " with great help of tool by Wolfgang Frisch (xororand@frexx.de)
 " inspired by David Liang's version (bmdavll@gmail.com)
 
-set background=dark
-
 hi clear
 
 if exists("syntax_on")
@@ -19,7 +17,7 @@ let colors_name = "wombat256"
 
 
 " General colors
-hi Normal		ctermfg=254		ctermbg=234		cterm=none		guifg=#f6f3e8	guibg=#242424	gui=none
+hi Normal		ctermfg=254		ctermbg=233		cterm=none		guifg=#f6f3e8	guibg=#242424	gui=none
 hi Cursor		ctermfg=none	ctermbg=241		cterm=none		guifg=NONE		guibg=#656565	gui=none
 hi Visual		ctermfg=7		ctermbg=238		cterm=none		guifg=#f6f3e8	guibg=#444444	gui=none
 " hi VisualNOS
@@ -60,5 +58,7 @@ hi Todo			ctermfg=245		cterm=none		guifg=#8f8f8f	gui=italic
 " Links
 hi! link FoldColumn		Folded
 hi! link CursorColumn	CursorLine
+
+set background=dark
 
 " vim:set ts=4 sw=4 noet:

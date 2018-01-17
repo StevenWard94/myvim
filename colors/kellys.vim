@@ -93,10 +93,10 @@ else
 		hi StatusLine 	ctermfg=235	ctermbg=81	cterm=bold
 		hi StatusLineNC ctermfg=235	ctermbg=254	cterm=none
 		hi Todo 		ctermfg=254	ctermbg=124	cterm=bold
-		hi Type 		ctermfg=178	ctermbg=234	cterm=none
-		hi Underlined	ctermfg=254	ctermbg=234	cterm=underline
+		hi Type 		ctermfg=178	ctermbg=233	cterm=none
+		hi Underlined	ctermfg=254	ctermbg=233	cterm=underline
 		hi Visual		ctermfg=235	ctermbg=254	cterm=none
-		hi Wildmenu		ctermfg=81	ctermbg=234	cterm=bold
+		hi Wildmenu		ctermfg=81	ctermbg=233	cterm=bold
 	endif
 endif
 

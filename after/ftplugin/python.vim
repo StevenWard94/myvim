@@ -1,7 +1,7 @@
 " Vim filetype plugin
 " Language:    Python
 " Author:      Steven Ward <stevenward94@gmail.com>
-" Last Change: 2017 Jun 10
+" Last Change: 2017 Sep 6
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set colorcolumn=80
@@ -20,3 +20,19 @@ if split(system('git root'), '/')[-1] =~? 'lpthw'
     silent source ~/.vim/after/ftplugin/lpthw.vim
   endif
 endif
+
+function! s:GetPython() abort
+  if local#utils#has_plugin('python-mode') == 0
+    return 'disable'
+  endif
+  let l:version_long = system('python --version')
+  if empty(l:version_long) || l:version_long =~? '^.*command not found'
+    return 'disable'
+  elseif l:version_long =~? '^python 2'
+    return 'python'
+  else
+    return 'python3'
+  endif
+endfunction
+
+let g:pymode_python = s:GetPython()

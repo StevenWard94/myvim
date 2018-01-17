@@ -489,7 +489,7 @@ elseif &background=='dark'
     endif
   elseif &t_Co==256
     " 256color dark terminal support here
-    hi Normal		ctermfg=252	ctermbg=234	cterm=NONE
+    hi Normal		ctermfg=252	ctermbg=233	cterm=NONE
     " Comment/Uncomment the following line to disable/enable transparency
     "hi Normal		ctermfg=252	ctermbg=NONE	cterm=NONE
     hi Comment		ctermfg=186	ctermbg=NONE	cterm=NONE
@@ -526,7 +526,7 @@ elseif &background=='dark'
     hi FoldColumn	ctermfg=254	ctermbg=28	cterm=NONE
     hi DiffAdd		ctermfg=NONE	ctermbg=18	cterm=NONE
     hi DiffChange	ctermfg=NONE	ctermbg=90	cterm=NONE
-    hi DiffDelete	ctermfg=69	ctermbg=234	cterm=NONE
+    hi DiffDelete	ctermfg=69	ctermbg=233	cterm=NONE
     hi DiffText		ctermfg=16	ctermbg=150	cterm=NONE
     hi SignColumn	ctermfg=254	ctermbg=28	cterm=NONE
     hi IncSearch	ctermfg=16	ctermbg=252	cterm=NONE

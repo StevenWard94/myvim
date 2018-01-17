@@ -61,11 +61,11 @@ hi TabLineFill      cterm=none       ctermbg=236
 hi TabLineSel       cterm=none       ctermbg=240 ctermfg=253
 hi LineNr           cterm=none                   ctermfg=238
 hi NonText          cterm=bold       ctermbg=233 ctermfg=241
-hi Folded           cterm=none       ctermbg=234 ctermfg=136
+hi Folded           cterm=none       ctermbg=233 ctermfg=136
 hi FoldColumn       cterm=none       ctermbg=236 ctermfg=103
 hi SignColumn       cterm=none       ctermbg=236 ctermfg=103
-hi CursorColumn     cterm=none       ctermbg=234
-hi CursorLine       cterm=none       ctermbg=234
+hi CursorColumn     cterm=none       ctermbg=233
+hi CursorLine       cterm=none       ctermbg=233
 hi IncSearch        cterm=bold       ctermbg=63  ctermfg=232
 hi Search           cterm=none       ctermbg=36  ctermfg=232
 hi Visual           cterm=none       ctermbg=24

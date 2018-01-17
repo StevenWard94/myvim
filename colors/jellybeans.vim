@@ -39,8 +39,6 @@
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 " THE SOFTWARE.
 
-set background=dark
-
 hi clear
 
 if exists("syntax_on")
@@ -466,11 +464,11 @@ call s:X("PreciseJumpTarget","B9ED67","405026","","White","Green")
 if !s:low_color
   hi StatusLineNC ctermbg=235
   hi Folded ctermbg=236
-  hi FoldColumn ctermbg=234
+  hi FoldColumn ctermbg=233
   hi SignColumn ctermbg=236
-  hi CursorColumn ctermbg=234
-  hi CursorLine ctermbg=234
-  hi SpecialKey ctermbg=234
+  hi CursorColumn ctermbg=233
+  hi CursorLine ctermbg=233
+  hi SpecialKey ctermbg=233
   hi NonText ctermbg=233
   hi LineNr ctermbg=233
   hi DiffText ctermfg=81
@@ -489,3 +487,5 @@ delf s:grey_color
 delf s:grey_level
 delf s:grey_number
 " }}}
+
+set background=dark

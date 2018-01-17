@@ -289,18 +289,18 @@ if &t_Co > 255
     hi SpecialComment  ctermfg=108   cterm=bold
     hi Special         ctermfg=181
     hi SpecialKey      ctermfg=151
-    hi Statement       ctermfg=187   ctermbg=234     cterm=none
+    hi Statement       ctermfg=187   ctermbg=233     cterm=none
     hi StatusLine      ctermfg=236   ctermbg=186
     hi StatusLineNC    ctermfg=235   ctermbg=108
     hi StorageClass    ctermfg=249   cterm=bold
     hi String          ctermfg=174
     hi Structure       ctermfg=229   cterm=bold
     hi Tag             ctermfg=181   cterm=bold
-    hi Title           ctermfg=7     ctermbg=234     cterm=bold
-    hi Todo            ctermfg=108   ctermbg=234     cterm=bold
+    hi Title           ctermfg=7     ctermbg=233     cterm=bold
+    hi Todo            ctermfg=108   ctermbg=233     cterm=bold
     hi Typedef         ctermfg=253   cterm=bold
     hi Type            ctermfg=187   cterm=bold
-    hi Underlined      ctermfg=188   ctermbg=234     cterm=bold
+    hi Underlined      ctermfg=188   ctermbg=233     cterm=bold
     hi VertSplit       ctermfg=236   ctermbg=65
     hi VisualNOS       ctermfg=236   ctermbg=210     cterm=bold
     hi WarningMsg      ctermfg=15    ctermbg=236     cterm=bold
@@ -317,7 +317,7 @@ if &t_Co > 255
     hi PMenuSel   ctermfg=223 ctermbg=235
 
     if exists("g:zenburn_high_Contrast") && g:zenburn_high_Contrast
-        hi Normal ctermfg=188 ctermbg=234
+        hi Normal ctermfg=188 ctermbg=233
         hi NonText         ctermfg=238
 
         if exists("g:zenburn_color_also_Ignore") && g:zenburn_color_also_Ignore

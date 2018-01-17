@@ -111,7 +111,7 @@ hi DiffAdd                cterm=NONE             ctermbg=71    ctermfg=16
 hi DiffDelete             cterm=NONE             ctermbg=124    ctermfg=16
 hi DiffChange             cterm=NONE             ctermbg=68    ctermfg=16
 hi DiffText               cterm=NONE             ctermbg=117   ctermfg=16
-hi Directory              cterm=NONE             ctermbg=234   ctermfg=33
+hi Directory              cterm=NONE             ctermbg=233   ctermfg=33
 hi ErrorMsg               cterm=bold             ctermbg=bg    ctermfg=203
 hi FoldColumn             cterm=bold             ctermbg=239   ctermfg=66
 hi Folded                 cterm=NONE             ctermbg=16    ctermfg=60
@@ -119,7 +119,7 @@ hi IncSearch              cterm=bold             ctermbg=202   ctermfg=231
 hi LineNr                 cterm=NONE             ctermbg=16    ctermfg=59
 hi MatchParen             cterm=bold             ctermbg=16    ctermfg=226
 hi ModeMsg                cterm=bold             ctermbg=46    ctermfg=16
-hi MoreMsg                cterm=bold             ctermbg=234   ctermfg=29
+hi MoreMsg                cterm=bold             ctermbg=233   ctermfg=29
 hi NonText                cterm=NONE             ctermbg=bg   ctermfg=59
 hi Pmenu                  cterm=NONE             ctermbg=238   ctermfg=231
 hi PmenuSbar              cterm=NONE             ctermbg=250   ctermfg=fg
@@ -140,7 +140,7 @@ hi TabLineFill            cterm=NONE             ctermbg=102   ctermfg=16
 hi TabLineSel             cterm=bold             ctermbg=16    ctermfg=59
 hi Title                  cterm=bold             ctermbg=bg    ctermfg=66
 hi Visual                 cterm=NONE             ctermbg=67    ctermfg=16
-hi WarningMsg             cterm=NONE             ctermbg=234   ctermfg=208
+hi WarningMsg             cterm=NONE             ctermbg=233   ctermfg=208
 hi WildMenu               cterm=NONE             ctermbg=116   ctermfg=16
 
 hi Comment                cterm=NONE             ctermbg=bg    ctermfg=65
@@ -155,7 +155,7 @@ hi Constant               cterm=NONE             ctermbg=bg    ctermfg=208
 hi Number                 cterm=NONE             ctermbg=bg    ctermfg=172
 hi Special                cterm=NONE             ctermbg=bg    ctermfg=64
 hi PreProc                cterm=NONE             ctermbg=bg    ctermfg=66
-hi Todo                   cterm=bold,underline   ctermbg=234   ctermfg=96
+hi Todo                   cterm=bold,underline   ctermbg=233   ctermfg=96
 
 hi diffOldFile            cterm=NONE             ctermbg=bg    ctermfg=67
 hi diffNewFile            cterm=NONE             ctermbg=bg    ctermfg=67

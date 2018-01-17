@@ -19,7 +19,6 @@
 " converting color names to #rrggbb form, but decided it was just not worth
 " the effort.  Maybe someone seeing this may decide otherwise...
 
-set background=dark
 if version > 580
     " no guarantees for version 5.8 and below, but this makes it stop
     " complaining
@@ -334,5 +333,7 @@ else
     hi Ignore        ctermfg=darkgrey
     hi Error         cterm=bold ctermfg=7 ctermbg=1
 endif
+
+set background=dark
 
 " vim: set fdl=0 fdm=marker:

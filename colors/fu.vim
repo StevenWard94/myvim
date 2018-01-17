@@ -36,7 +36,7 @@ let colors_name = "fu"
 
 
 " General colors
-hi Normal         ctermfg=252   ctermbg=234                  guifg=#d0d0d0  guibg=#1c1c1c
+hi Normal         ctermfg=252   ctermbg=233                  guifg=#d0d0d0  guibg=#1c1c1c
 hi CursorColumn                 ctermbg=238                                 guibg=#444444
 hi Cursor                       ctermbg=214                                 guibg=#ffaf00
 hi CursorLine                   ctermbg=238                                 guibg=#444444
