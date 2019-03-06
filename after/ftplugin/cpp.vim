@@ -2,12 +2,12 @@
 " Language:       C++
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/StevenWard94/myvim
-" Last Change:    2017 Apr 22
+" Last Change:    2019 Jan 14
 " ======================================================================================
 
-let g:syntastic_cpp_checkers = [ 'gcc', 'clang_check', 'clang_tidy' ]
+let g:syntastic_cpp_checkers = [ 'gcc' ] ", 'clang_check', 'clang_tidy' ]
 let g:syntastic_cpp_compiler = 'g++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libstdc++ -Wall -Wextra -pedantic'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -Wall -Wextra -pedantic'
 
 let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_cpp_auto_refresh_includes = 1
@@ -80,7 +80,24 @@ nmap /** "=CppHeaderComment()<CR>:0put =<CR>G
 "
 "  return l:tagfile
 "endfunction
-set tags=../.tags
+
+function! s:IsCSC3102() abort
+  let l:dir_path = expand("%:p:h")
+  let l:path_list = split(l:dir_path, '/')
+  if ( match(l:path_list, '^cpp\.d$') != -1 && match(l:path_list, '^CSC3102$') != -1 ) ||
+  \  ( match(l:path_list, '^Documents$') != -1 && match(l:path_list, '^csc-3102$') != -1 )
+    return 1
+  else
+    return 0
+  end
+endfunction
+
+if s:IsCSC3102() == 1
+  set tags=./.tags
+  set shiftwidth=4 tabstop=8 softtabstop=2
+else
+  set tags=../.tags
+end
 
 
 function! s:dec_path_depth(full_path, levels_up) abort

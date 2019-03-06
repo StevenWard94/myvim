@@ -1,9 +1,8 @@
 " Vim filetype plugin
-" Language:       Shell Scripts (sh/bash)
+" Language:       SCSS
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/StevenWard94/myvim
-" Last Change:    2017 Jan 7
+" Last Change:    2018 Jul 25
 " ======================================================================================
 
-set textwidth=88 formatoptions=cr1jb
-set expandtab shiftwidth=4 softtabstop=2 tabstop&vim
+let b:syntastic_mode = 'passive'

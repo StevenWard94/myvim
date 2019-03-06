@@ -2,11 +2,11 @@
 " Language:       haskell
 " Maintainer:     Steven Ward <stevenward94@gmail.com>
 " URL:            https://github.com/StevenWard94/myvim
-" Last Change:    2016 Sep 15
+" Last Change:    2018 Mar 18
 " ======================================================================================
 
-set textwidth=80 formatoptions=cr1jbql nowrap nopaste
-set shiftwidth=2 softtabstop=2 tabstop& expandtab
+set textwidth=88 formatoptions=cr1jbql nowrap nopaste
+set shiftwidth=4 softtabstop=2 tabstop& expandtab
 set autoindent smartindent
 set backspace-=indent
 

@@ -23,3 +23,9 @@ doc/tags
 .vim-flavor
 
 *.old*
+
+# ignore netrw history
+*.netrwhist
+
+# ignore swap files (if I enable them; currently I have 'noswapfile' set)
+*~$
