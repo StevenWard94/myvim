@@ -7,7 +7,7 @@
 
 let g:syntastic_cpp_checkers = [ 'gcc' ] ", 'clang_check', 'clang_tidy' ]
 let g:syntastic_cpp_compiler = 'g++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -Wall -Wextra -pedantic'
+let g:syntastic_cpp_compiler_options = ' -std=c++11'  " could also contain '-pedantic'
 
 let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_cpp_auto_refresh_includes = 1
@@ -84,7 +84,7 @@ nmap /** "=CppHeaderComment()<CR>:0put =<CR>G
 function! s:IsCSC3102() abort
   let l:dir_path = expand("%:p:h")
   let l:path_list = split(l:dir_path, '/')
-  if ( match(l:path_list, '^cpp\.d$') != -1 && match(l:path_list, '^CSC3102$') != -1 ) ||
+  if ( match(l:path_list, '^cpp\.d$') != -1 && match(l:path_list, '^CSC-3102$') != -1 ) ||
   \  ( match(l:path_list, '^Documents$') != -1 && match(l:path_list, '^csc-3102$') != -1 )
     return 1
   else
@@ -94,7 +94,8 @@ endfunction
 
 if s:IsCSC3102() == 1
   set tags=./.tags
-  set shiftwidth=4 tabstop=8 softtabstop=2
+  set expandtab shiftwidth=4 tabstop=8 softtabstop=2
+  let g:syntastic_cpp_compiler_options .= ' -Wno-deprecated -fpermissive'
 else
   set tags=../.tags
 end
