@@ -2,7 +2,7 @@
 "
 " Author:      Steven Ward <stevenward94@gmail.com>
 " URL:         https://github.com/StevenWard94/dotfiles/vim/autoload/local/
-" Last Change: 2017 May 1
+" Last Change: 2019 Aug 15
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " define a helpful environment variable that points to vim user directory
@@ -37,4 +37,24 @@ function! local#utils#has_plugin(plug) abort
     return 1
   endif
   return 0
+endfunction
+
+
+" Function to insert a timestamp in RFC 3339 format (using 'T' before the time)
+" The optional argument allows user to specify the 'FMT' value of date's --rfc-3339 flag
+"     If argument is not specified, 'seconds' is used as the value for 'FMT'
+" Timestamp format: '[YYYY-MM-DD]T[HH:MM:SS][+/-][ZZ:ZZ]'  (assumes '--rfc-3339=seconds')
+" Example: 2019-08-15T17:20:06-05:00    (this example uses '--rfc-3339=seconds')
+function! local#utils#rfc3339_timestamp(...) abort
+  let l:fmt_value = 'seconds'
+
+  if a:0 > 1
+    if a:1 ==? 'date' || a:1 ==? 'dates' || a:1 ==? 'day' || a:1 ==? 'days'
+      let l:fmt_value = 'date'
+    elseif a:1 ==? 'nanosecond' || a:1 ==? 'nanoseconds' || a:1 ==? 'ns'
+      let l:fmt_value = 'ns'
+    endif
+  endif
+
+  return "normal! i\<C-r>=trim(system(" . '"date --rfc-3339=' . l:fmt_value . ' | sed ' . "'s/ /T/'" . '"))' . "\<CR>"
 endfunction
