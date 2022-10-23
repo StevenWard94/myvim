@@ -35,7 +35,7 @@ function! CppHeaderComment() abort
      \ . " * Author:       Steven Ward <stevenward94@gmail.com>\n"
      \ . " * File:         " . l:file_info.proj_path . "\n"
      \ . ( l:file_info.repo_name == "" ? "" :
-     \   " * URl:          https://github.com/StevenWard94/" . l:file_info.repo_name . "\n" )
+     \   " * URL:          https://github.com/StevenWard94/" . l:file_info.repo_name . "\n" )
      \ . " * Last Change:  " . l:curr_date . "\n"
      \ . " " . repeat('*', l:tw - 5) . "/\n"
 endfunction

@@ -23,6 +23,21 @@ let g:easytags_autorecurse = 1
 let g:easytags_include_members = 1
 
 
+function! CHeaderComment() abort
+  let l:file_info = s:get_file_info()
+
+  let l:curr_date = strftime("%Y %b %d")
+  let l:tw        = &textwidth
+
+  return "/" . repeat('*', l:tw - 5) . "//**\n"
+     \ . " * Author:       Steven Ward <stevenward94@gmail.com>\n"
+     \ . " * File:         " . l:file_info.proj_path . "\n"
+     \ . " * Last Change:  " . l:curr_date . "\n"
+     \ . " " . repeat('*', l:tw - 5) . "/\n"
+endfunction
+nmap /** "=CHeaderComment()<CR>:0put =<CR>G
+
+
 set colorcolumn=90
 highlight ColorColumn ctermbg=236 
 
@@ -52,6 +67,24 @@ function! s:SetGCCOptions() abort
 
   return l:c_compiler_options
 
+endfunction
+
+
+function! s:get_file_info() abort
+  let l:file_info = { }
+  let l:file_info.path = expand("%:p")
+  if strlen( system("git root 2>/dev/null") ) > 0
+    let l:file_info.repo_path = system("git root")
+    let l:repo = split(l:file_info.repo_path, '/')[-1]
+    let l:file_info.repo_name = strpart(l:repo, 0, strchars(l:repo) - 1)
+    let l:file_info.proj_path = strpart(l:file_info.path, match(l:file_info.path, l:file_info.repo_name))
+  else
+    let l:file_info.repo_path = ""
+    let l:file_info.repo_name = ""
+    let l:file_info.proj_path = l:file_info.path
+  endif
+
+  return l:file_info
 endfunction
 
 let g:syntastic_c_compiler_options = s:SetGCCOptions()

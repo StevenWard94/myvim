@@ -5,7 +5,7 @@
 " Last Change:    2019 Aug 15
 " ======================================================================================
 
-setlocal foldmethod=syntax
+setlocal foldmethod=syntax conceallevel=0
 
 " see: local#utils#rfc3339_timestamp() in .vim/autoload/local/utils.vim for more info
 command! -nargs=? Timestamp execute local#utils#rfc3339_timestamp(<f-args>) 
